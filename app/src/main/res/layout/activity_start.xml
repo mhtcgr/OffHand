@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnBluetoothWatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加您的蓝牙手表"/>
+
+    <Button
+        android:id="@+id/btnBluetoothEarphone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加您的蓝牙耳机"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btnStartTraining"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="直接开始训练"
+        android:layout_marginTop="32dp"/>
+</LinearLayout>
