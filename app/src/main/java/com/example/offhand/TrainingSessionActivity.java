@@ -1,5 +1,6 @@
 package com.example.offhand;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.Button;
@@ -85,6 +86,7 @@ public class TrainingSessionActivity extends AppCompatActivity {
         findViewById(R.id.btn_ready).setOnClickListener(v -> {
             if (validateSelection()) {
                 postTrainingData();
+                jumpToTips();
             } else {
                 Toast.makeText(this, "请先选择训练方式和主题", Toast.LENGTH_SHORT).show();
             }
@@ -131,5 +133,16 @@ public class TrainingSessionActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void jumpToTips() {
+        Intent intent = new Intent(this, TipsActivity.class);
+
+        // 将参数添加到 Intent 中
+        intent.putExtra("selectedTheme", selectedTheme);
+        intent.putExtra("selectedMethod", selectedMethod);
+
+        // 启动目标 Activity
+        startActivity(intent);
     }
 }

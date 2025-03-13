@@ -36,6 +36,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.example.offhand.model.sendGetRequest
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -266,14 +267,33 @@ class OneShotActivity : AppCompatActivity() {
     private fun showExitDialog() {
         AlertDialog.Builder(this)
             .setMessage("确认退出？")
-            .setPositiveButton("确认退出") { _, _ ->
+            .setPositiveButton("确认退出") { _, _ ->//点击确认退出触发发送get请求
+//                val intent = Intent(this, OneShotEndActivity::class.java)
+//                startActivity(intent)
+//                finish()
 
+                sendGetRequest(
+                    userId = "user_001",
+                    recordId = "record_001",
+                    onSuccess = { apiResponse, responseBody ->
+                        // 处理成功响应
+                        runOnUiThread {
+                            Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
+                        }
+                        val intent = Intent(this, OneShotEndActivity::class.java).apply {
+                            //putExtra("analysis_data", apiResponse) // 直接传递对象
+                        }
+                        startActivity(intent)
+                        finish()
+                    },
+                    onFailure = { errorCode, errorMessage ->
+                        // 处理失败
+                        runOnUiThread {
+                            Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                )
 
-
-
-                val intent = Intent(this, OneShotEndActivity::class.java)
-                startActivity(intent)
-                finish()
             }
             .setNegativeButton("再想想", null)
             .show()

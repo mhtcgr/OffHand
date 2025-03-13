@@ -1,6 +1,7 @@
 package com.example.offhand
 
 import ApiResponse
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -49,7 +50,13 @@ class MultiShotEndActivity : AppCompatActivity() {
                     runOnUiThread {
                         Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
                     }
-                    handleApiResponse(apiResponse) // 处理解析后的数据
+                    //这里还需要加一个跳转到ywh写的新页面的逻辑
+                    val intent = Intent(this, OneShotEndActivity::class.java).apply {
+                        putExtra("analysis_data", apiResponse) // 直接传递对象
+                    }
+                    startActivity(intent)
+                    finish()
+                    //handleApiResponse(apiResponse) // 处理解析后的数据
                 },
                 onFailure = { errorCode, errorMessage ->
                     // 处理失败
@@ -58,7 +65,6 @@ class MultiShotEndActivity : AppCompatActivity() {
                     }
                 }
             )
-//            sendGetRequest()
         }
     }
 

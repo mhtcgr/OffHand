@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class TipsActivity : AppCompatActivity() {
 //    private val mode = intent.getStringExtra("mode") // 获取模式
-    private val mode = "multiShot"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -19,14 +18,19 @@ class TipsActivity : AppCompatActivity() {
         val closeButton: Button = findViewById(R.id.closeButton)
 
         nextButton.setOnClickListener {
-            if (mode == "multiShot") {
+            val intent = intent
+            val selectedTheme = intent.getStringExtra("selectedTheme")
+            val selectedMethod = intent.getStringExtra("selectedMethod")
+            if (selectedMethod == "multiple") {
                 // 跳转到多次投篮页面
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("selectedTheme", selectedTheme)
                 startActivity(intent)
                 finish()
             } else {
                 // 跳转到单次投篮页面
                 val intent = Intent(this, OneShotActivity::class.java)
+                intent.putExtra("selectedTheme", selectedTheme)
                 startActivity(intent)
                 finish()
             }
