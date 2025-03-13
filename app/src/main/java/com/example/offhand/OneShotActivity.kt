@@ -59,11 +59,11 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class OneShotActivity : AppCompatActivity() {
-    private lateinit var startPauseButton: Button
     private lateinit var closeButton: Button
 
     private var previewView: PreviewView? = null
     private val client = OkHttpClient()
+    private val CAMERA_PERMISSION_REQUEST_CODE = 100
 
     private var seconds = 0
     private val handler = Handler(Looper.getMainLooper())
@@ -83,5 +83,200 @@ class OneShotActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_one_shot)
+
+        previewView = findViewById(R.id.previewView)
+        closeButton = findViewById(R.id.closeButton)
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        closeButton.setOnClickListener {
+            showExitDialog()
+        }
+
+        requestStoragePermission()
+        // 检查并请求摄像头权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startCamera()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+        }
     }
+
+    private fun requestStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                startActivity(intent)
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                101
+            )
+        }
+    }
+
+    private fun startCamera() {
+        //cameraProviderFuture 是 CameraX 的核心 API，用于异步获取 ProcessCameraProvider。
+        val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder().build()//Preview 组件用于在 PreviewView 里显示摄像头画面。
+            preview.setSurfaceProvider(previewView?.surfaceProvider)// 让 CameraX 将视频流绘制到 UI。
+//          录制需要，不知道现在还需不需要？
+            val recorder = Recorder.Builder()
+                .setExecutor(cameraExecutor)
+                .build()//创建 Recorder 用于视频录制，指定 cameraExecutor 作为执行线程。
+            videoCapture = VideoCapture.withOutput(recorder)// 将 Recorder 绑定到 videoCapture，以便之后录制视频。
+
+            val imageAnalysis = ImageAnalysis.Builder() //创建一个图像分析器，用于处理摄像头帧。
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888) // 直接获取 RGB 图像
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // 只保留最新帧，避免堆积
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor) { image ->  //让 cameraExecutor 异步运行 processImage(image)。
+                        val currentTime = SystemClock.elapsedRealtime()
+                        if (currentTime - lastCaptureTime >= FRAME_INTERVAL) {
+                            lastCaptureTime = currentTime
+                            processImage(image)
+                            Log.d("CameraX", "Processing frame at: $currentTime")
+                        } else {
+                            image.close() // 立即释放不符合时间条件的帧
+                        }
+                    }
+                }
+
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)//选择后置摄像头。
+                .build()
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    this as LifecycleOwner, cameraSelector, preview, imageAnalysis//videoCapture
+                )
+            } catch (exc: Exception) {
+                Log.e("CameraX", "Use case binding failed", exc)
+            }
+        }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun processImage(imageProxy: ImageProxy) {
+        val bitmap = imageProxyToBitmap(imageProxy)
+        imageProxy.close()
+
+        // 将Bitmap转换为字节数组并加入队列
+        val byteArray = bitmapToByteArray(bitmap)
+        bitmap.recycle()
+
+        synchronized(uploadLock) {
+            imageQueue.add(byteArray)
+            // 当队列达到6张时立即触发上传
+            if (imageQueue.size >= 6) {
+                val images = mutableListOf<ByteArray>()
+                repeat(6) {
+                    imageQueue.poll()?.let { images.add(it) }
+                }
+                if (images.size == 6) {
+                    uploadImages(images)
+                }
+            }
+        }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
+    }
+
+    private fun imageProxyToBitmap(image: ImageProxy): Bitmap {
+//        val buffer = image.planes[0].buffer
+//        val bytes = ByteArray(buffer.remaining())
+//        buffer.get(bytes)
+//        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        val width = image.width
+        val height = image.height
+        val buffer = image.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+
+        // 创建 ARGB_8888 格式的 Bitmap
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val byteBuffer = ByteBuffer.wrap(bytes)
+        bitmap.copyPixelsFromBuffer(byteBuffer)
+
+        return bitmap
+    }
+
+    private fun uploadImages(imageDataList: List<ByteArray>) {
+        val url = "http://10.52.34.249:8080/detection/uploadImages"
+
+        // 构建多部分请求体
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("userId", "1")
+
+        // 添加多个图片文件
+        imageDataList.forEachIndexed { index, byteArray ->
+            requestBody.addFormDataPart(
+                "images",  // 根据后端要求调整参数名（如images[]）
+                "frame_${System.currentTimeMillis()}_$index.jpg",
+                byteArray.toRequestBody("image/jpeg".toMediaType())
+            )
+        }
+
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody.build())
+            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
+            .addHeader("Cache-Control", "no-cache")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@OneShotActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    val responseCode = response.code
+                    val responseBody = response.body?.string() ?: "无返回内容"
+                    runOnUiThread {
+                        if (!response.isSuccessful) {
+                            Toast.makeText(
+                                this@OneShotActivity,
+                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    println("Response Code: $responseCode")
+                    println("Response Body: $responseBody")
+                }
+            }
+        })
+    }
+
+    private fun showExitDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("确认退出？")
+            .setPositiveButton("确认退出") { _, _ ->
+
+
+
+
+                val intent = Intent(this, OneShotEndActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("再想想", null)
+            .show()
+    }
+
 }

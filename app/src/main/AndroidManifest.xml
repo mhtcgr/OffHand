@@ -24,22 +24,23 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".OneShotEndActivity"
+            android:exported="false" />
+        <activity
             android:name=".TrainingActivity"
             android:exported="false" />
         <activity
             android:name=".StartActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".TrainingSessionActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".OneShotActivity"
             android:exported="false" />
@@ -48,11 +49,11 @@
             android:exported="false" />
         <activity
             android:name=".TipsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".sendMessageActivity"
             android:exported="true">
+
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->

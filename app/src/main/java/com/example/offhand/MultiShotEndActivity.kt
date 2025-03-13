@@ -2,10 +2,12 @@ package com.example.offhand
 
 import ApiResponse
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.offhand.model.sendGetRequest
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
@@ -39,58 +41,25 @@ class MultiShotEndActivity : AppCompatActivity() {
         shotsTextView.text = "投篮数: $shots"
 
         button_next.setOnClickListener {
-            sendGetRequest()
-        }
-    }
-
-    private fun sendGetRequest() {
-        // 使用HttpUrl.Builder安全构建URL
-        val url = "http://10.52.34.249:8080/detailedAnalysis/getByRecordId?userId=user_001&recordId=record_001"
-
-        val request = Request.Builder()
-            .url(url)
-            .get()  // 明确指定GET方法
-            .addHeader("Authorization",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MultiShotEndActivity,
-                        "请求失败: ${e.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    val responseCode = response.code
-                    val responseBody = response.body?.string() ?: "无返回内容"
+            sendGetRequest(
+                userId = "user_001",
+                recordId = "record_001",
+                onSuccess = { apiResponse, responseBody ->
+                    // 处理成功响应
                     runOnUiThread {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(
-                                this@MultiShotEndActivity,
-                                "请求失败: HTTP $responseCode, 错误信息: $responseBody",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            // 使用Gson解析JSON
-                            val gson = Gson()
-                            val apiResponse = gson.fromJson(responseBody, ApiResponse::class.java)
-
-                            // 处理解析后的数据
-                            handleApiResponse(apiResponse)
-                        }
+                        Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
                     }
-                    println("Response Code: $responseCode")
-                    println("Response Body: $responseBody")
+                    handleApiResponse(apiResponse) // 处理解析后的数据
+                },
+                onFailure = { errorCode, errorMessage ->
+                    // 处理失败
+                    runOnUiThread {
+                        Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_LONG).show()
+                    }
                 }
-            }
-        })
+            )
+//            sendGetRequest()
+        }
     }
 
 

@@ -33,3 +33,4 @@ data class ShootingAngles(
     val releaseBallAngle: Double,
     val theme: String
 ) : Parcelable
+

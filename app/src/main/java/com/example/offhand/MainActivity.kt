@@ -1,6 +1,5 @@
 package com.example.offhand
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -126,28 +125,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 摄像头权限请求结果的处理
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 权限被授予，启动摄像头
-                startCamera()
-            } else {
-                AlertDialog.Builder(this)
-                    .setTitle("摄像头权限请求")
-                    .setMessage("应用需要摄像头权限来录制视频，请在设置中手动开启。")
-                    .setPositiveButton("去设置") { _, _ ->
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.parse("package:$packageName")
-                        }
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("取消", null)
-                    .show()
-            }
-        }
-    }
+//    // 摄像头权限请求结果的处理
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // 权限被授予，启动摄像头
+//                startCamera()
+//            } else {
+//                AlertDialog.Builder(this)
+//                    .setTitle("摄像头权限请求")
+//                    .setMessage("应用需要摄像头权限来录制视频，请在设置中手动开启。")
+//                    .setPositiveButton("去设置") { _, _ ->
+//                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+//                            data = Uri.parse("package:$packageName")
+//                        }
+//                        startActivity(intent)
+//                    }
+//                    .setNegativeButton("取消", null)
+//                    .show()
+//            }
+//        }
+//    }
 
     private fun requestStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
