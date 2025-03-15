@@ -2,6 +2,7 @@ package com.example.offhand.model
 
 // NetworkUtils.kt
 import ApiResponse
+import ProbeRequest
 import com.example.offhand.GlobalVariables
 import com.example.offhand.GlobalVariables.getBaseUrl
 import com.google.gson.Gson
@@ -14,10 +15,17 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object NetworkUtils {
-    private val client = OkHttpClient()
-
+    private val client = OkHttpClient.Builder()
+        .callTimeout(30, TimeUnit.SECONDS) // 整个请求的超时时间
+        .connectTimeout(30, TimeUnit.SECONDS) // 连接超时时间
+        .readTimeout(30, TimeUnit.SECONDS) // 读取超时时间
+        .writeTimeout(10, TimeUnit.SECONDS) // 写入超时时间
+        .build()
+    private val baseUrl = GlobalVariables.getBaseUrl()
+    private val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I"
 
     fun sendGetRequest(
         userId: String,
@@ -25,16 +33,12 @@ object NetworkUtils {
         onSuccess: (ApiResponse, String) -> Unit, // 增加成功时的响应内容参数
         onFailure: (Int, String) -> Unit // 增加失败时的错误码和错误信息参数
     ) {
-        val baseUrl = getBaseUrl()
         val url = "$baseUrl/detailedAnalysis/getByRecordId?userId=$userId&recordId=$recordId"
 
         val request = Request.Builder()
             .url(url)
             .get()
-            .addHeader(
-                "Authorization",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I"
-            )
+            .addHeader("Authorization", token)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -63,7 +67,6 @@ object NetworkUtils {
         onSuccess: (responseBody: String) -> Unit,
         onFailure: (errorMessage: String) -> Unit
     ) {
-        val baseUrl = GlobalVariables.getBaseUrl()
         val url = "$baseUrl/detection/uploadImages"
 
         // 构建多部分请求体
@@ -83,7 +86,7 @@ object NetworkUtils {
         val request = Request.Builder()
             .url(url)
             .post(requestBody.build())
-            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
+            .addHeader("Authorization", token)
             .addHeader("Cache-Control", "no-cache")
             .build()
 
@@ -103,5 +106,44 @@ object NetworkUtils {
         })
     }
 
+    fun probeLLMRequest(
+        userId: String,
+        recordId: String,
+        question: String,
+        onSuccess: (responseBody: String) -> Unit,
+        onFailure: (errorMessage: String) -> Unit
+    ) {
+        val url = "$baseUrl/llm/consult"
+        val jsonString = Gson().toJson(ProbeRequest(
+            userId = userId,
+            recordId = recordId,
+            inquiry = question,
+            context = true
+        ))
 
+        // 构建 RequestBody
+        val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .addHeader("Authorization", token)
+            .addHeader("Cache-Control", "no-cache")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(e.message ?: "未知错误")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string() ?: "无返回内容"
+                if (response.isSuccessful) {
+                    onSuccess(responseBody) // 调用页面解析 message
+                } else {
+                    onFailure("HTTP ${response.code}, 错误信息: $responseBody")
+                }
+            }
+        })
+    }
 }

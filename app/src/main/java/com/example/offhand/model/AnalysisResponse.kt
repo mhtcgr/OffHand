@@ -34,3 +34,9 @@ data class ShootingAngles(
     val theme: String
 ) : Parcelable
 
+data class ProbeRequest(
+    val userId: String,
+    val recordId: String,
+    val inquiry: String,
+    val context: Boolean
+)

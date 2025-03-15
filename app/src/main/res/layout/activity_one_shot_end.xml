@@ -34,7 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="null"/>
+                    android:text=" "/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,6 +60,54 @@
                     android:text="85-95°"/>
                 <TextView
                     android:id="@+id/tv_aim_elbow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="身体角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="85-95°"/>
+                <TextView
+                    android:id="@+id/tv_aim_body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="膝盖角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="85-95°"/>
+                <TextView
+                    android:id="@+id/tv_aim_knee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="大臂角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="85-95°"/>
+                <TextView
+                    android:id="@+id/tv_aim_arm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"/>
@@ -90,7 +138,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="null"/>
+                    android:text=" "/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,6 +163,54 @@
                     android:text="180°"/>
                 <TextView
                     android:id="@+id/tv_release_elbow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="大臂角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="180°"/>
+                <TextView
+                    android:id="@+id/tv_release_arm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="膝盖角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="180°"/>
+                <TextView
+                    android:id="@+id/tv_release_knee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="身体角度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="180°"/>
+                <TextView
+                    android:id="@+id/tv_release_body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--"/>
@@ -151,7 +247,55 @@
             android:layout_height="wrap_content"
             android:background="@drawable/text_border"
             android:padding="8dp"/>
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="你有什么不了解的想进一步询问AI?"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp"/>
 
+        <!-- 输入框和询问按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- 输入框 -->
+            <EditText
+                android:id="@+id/inputBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="文字框（允许用户输入）"
+                android:background="@drawable/edit_text_border"
+                android:padding="8dp"/>
+
+            <!-- 询问按钮 -->
+            <Button
+                android:id="@+id/askButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="询问"
+                android:backgroundTint="@color/primaryColor"
+                android:textColor="@color/white"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"/>
+        </LinearLayout>
+
+        <!-- AI 回答区域 -->
+        <TextView
+            android:id="@+id/answerArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AI的回答……"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:background="@drawable/text_view_border"
+            android:padding="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,6 +308,7 @@
                 android:id="@+id/save_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryColor"
                 android:text="保存本次训练报告并投喂给AI"
                 android:layout_weight="1"/>
 
@@ -179,14 +324,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="继续投篮"
+                android:backgroundTint="@color/primaryColor"
                 android:layout_marginEnd="8dp"/>
 
             <Button
                 android:id="@+id/return_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/primaryColor"
                 android:text="退出"/>
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/> <!-- 默认不可见 -->
     </LinearLayout>
 </ScrollView>
 

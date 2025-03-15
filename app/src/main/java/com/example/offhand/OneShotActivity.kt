@@ -171,41 +171,7 @@ class OneShotActivity : AppCompatActivity() {
                     imageQueue.poll()?.let { images.add(it) }
                 }
                 if (images.size == 6) {
-                    NetworkUtils.uploadImages(
-                        images,
-                        onSuccess = {responseBody ->
-                            runOnUiThread {
-                                try {
-                                    val jsonResponse = JSONObject(responseBody)
-                                    val message = jsonResponse.getString("message")
-                                    when (message) {
-                                        "hit", "miss" -> {
-                                            // 检测到投篮，跳转到结果页面
-                                            val intent = Intent(this, OneShotEndActivity::class.java)
-                                            intent.putExtra("result", message) // 传递结果（hit 或 miss）
-                                            startActivity(intent)
-                                        }
-                                        "receive" -> {
-                                            // 未检测到投篮，仅显示上传成功消息
-                                            Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-                                        }
-                                        else -> {
-                                            // 未知响应，显示警告
-                                            Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-                                } catch (e: JSONException) {
-                                    e.printStackTrace()
-                                    Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        },
-                        onFailure = { errorMessage ->
-                            runOnUiThread {
-                                Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
+                    upLoadImage(images)
                 }
             }
         }
@@ -236,6 +202,43 @@ class OneShotActivity : AppCompatActivity() {
         return bitmap
     }
 
+    private fun upLoadImage(images: List<ByteArray>){
+        NetworkUtils.uploadImages(
+            images,
+            onSuccess = {responseBody ->
+                runOnUiThread {
+                    try {
+                        val jsonResponse = JSONObject(responseBody)
+                        val message = jsonResponse.getString("message")
+                        when (message) {
+                            "hit", "miss" -> {
+                                // 检测到投篮，跳转到结果页面
+                                val intent = Intent(this, OneShotEndActivity::class.java)
+                                intent.putExtra("result", message) // 传递结果（hit 或 miss）
+                                startActivity(intent)
+                            }
+                            "receive" -> {
+                                // 未检测到投篮，仅显示上传成功消息
+                                Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                // 未知响应，显示警告
+                                Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+            onFailure = { errorMessage ->
+                runOnUiThread {
+                    Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
 //    private fun uploadImages(imageDataList: List<ByteArray>) {
 //        val baseUrl = getBaseUrl()
 //        val url = "$baseUrl/detection/uploadImages"
