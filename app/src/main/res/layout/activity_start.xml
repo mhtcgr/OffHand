@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:background="@color/white">
 
-    <Button
+    <!-- 添加蓝牙手表按钮 -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBluetoothWatch"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="添加您的蓝牙手表"/>
+        android:text="添加您的蓝牙手表"
+        android:textColor="@color/primaryColor"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/primaryColor"
+        app:strokeWidth="1dp"
+        android:layout_marginBottom="16dp"/>
 
-    <Button
+    <!-- 添加蓝牙耳机按钮 -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBluetoothEarphone"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="添加您的蓝牙耳机"
-        android:layout_marginTop="16dp"/>
+        android:textColor="@color/primaryColor"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/primaryColor"
+        app:strokeWidth="1dp"
+        android:layout_marginBottom="32dp"/>
 
-    <Button
+    <!-- 直接开始训练按钮 -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStartTraining"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="直接开始训练"
-        android:layout_marginTop="32dp"/>
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primaryColor"
+        app:cornerRadius="8dp"/>
 </LinearLayout>

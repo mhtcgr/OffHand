@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.offhand.model.sendGetRequest
+import com.example.offhand.model.NetworkUtils
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
@@ -42,7 +42,7 @@ class MultiShotEndActivity : AppCompatActivity() {
         shotsTextView.text = "投篮数: $shots"
 
         button_next.setOnClickListener {
-            sendGetRequest(
+            NetworkUtils.sendGetRequest(
                 userId = "user_001",
                 recordId = "record_001",
                 onSuccess = { apiResponse, responseBody ->

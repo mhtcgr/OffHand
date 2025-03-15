@@ -6,8 +6,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,9 +14,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,20 +32,19 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.example.offhand.GlobalVariables.getBaseUrl
+import com.example.offhand.model.NetworkUtils
 import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -125,29 +120,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    // 摄像头权限请求结果的处理
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // 权限被授予，启动摄像头
-//                startCamera()
-//            } else {
-//                AlertDialog.Builder(this)
-//                    .setTitle("摄像头权限请求")
-//                    .setMessage("应用需要摄像头权限来录制视频，请在设置中手动开启。")
-//                    .setPositiveButton("去设置") { _, _ ->
-//                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-//                            data = Uri.parse("package:$packageName")
-//                        }
-//                        startActivity(intent)
-//                    }
-//                    .setNegativeButton("取消", null)
-//                    .show()
-//            }
-//        }
-//    }
-
     private fun requestStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
@@ -209,35 +181,66 @@ class MainActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-//    private fun processImage(imageProxy: ImageProxy) {
-//        val bitmap = imageProxyToBitmap(imageProxy)
-//        imageProxy.close()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            uploadImage(bitmap)
-//        }
-//    }
-private fun processImage(imageProxy: ImageProxy) {
-    val bitmap = imageProxyToBitmap(imageProxy)
-    imageProxy.close()
 
-    // 将Bitmap转换为字节数组并加入队列
-    val byteArray = bitmapToByteArray(bitmap)
-    bitmap.recycle()
+    private fun processImage(imageProxy: ImageProxy) {
+        val bitmap = imageProxyToBitmap(imageProxy)
+        imageProxy.close()
 
-    synchronized(uploadLock) {
-        imageQueue.add(byteArray)
-        // 当队列达到6张时立即触发上传
-        if (imageQueue.size >= 6) {
-            val images = mutableListOf<ByteArray>()
-            repeat(6) {
-                imageQueue.poll()?.let { images.add(it) }
-            }
-            if (images.size == 6) {
-                uploadImages(images)
+        // 将Bitmap转换为字节数组并加入队列
+        val byteArray = bitmapToByteArray(bitmap)
+        bitmap.recycle()
+
+        synchronized(uploadLock) {
+            imageQueue.add(byteArray)
+            // 当队列达到6张时立即触发上传
+            if (imageQueue.size >= 6) {
+                val images = mutableListOf<ByteArray>()
+                repeat(6) {
+                    imageQueue.poll()?.let { images.add(it) }
+                }
+                if (images.size == 6) {
+                    // 调用 NetworkUtils 上传图片
+                    NetworkUtils.uploadImages(
+                        images,
+                        onSuccess = {responseBody ->
+                            runOnUiThread {
+                                try {
+                                    val jsonResponse = JSONObject(responseBody)
+                                    val message = jsonResponse.getString("message")
+                                    when (message) {
+                                        "hit" -> {
+                                            // 检测到投篮
+                                            incrementShots()
+                                            incrementScore()
+                                        }
+                                        "miss" -> {
+                                            incrementShots()
+                                        }
+                                        "receive" -> {
+                                            // 未检测到投篮，仅显示上传成功消息
+                                            Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                                        }
+                                        else -> {
+                                            // 未知响应，显示警告
+                                            Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                    Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        },
+                        onFailure = { errorMessage ->
+                            runOnUiThread {
+                                Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    )
+                }
             }
         }
     }
-}
 
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val byteArrayOutputStream = ByteArrayOutputStream()
@@ -246,10 +249,6 @@ private fun processImage(imageProxy: ImageProxy) {
     }
 
     private fun imageProxyToBitmap(image: ImageProxy): Bitmap {
-//        val buffer = image.planes[0].buffer
-//        val bytes = ByteArray(buffer.remaining())
-//        buffer.get(bytes)
-//        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         val width = image.width
         val height = image.height
         val buffer = image.planes[0].buffer
@@ -264,118 +263,87 @@ private fun processImage(imageProxy: ImageProxy) {
         return bitmap
     }
 
-    private fun uploadImages(imageDataList: List<ByteArray>) {
-        val url = "http://10.52.34.249:8080/detection/uploadImages"
-
-        // 构建多部分请求体
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("userId", "1")
-
-        // 添加多个图片文件
-        imageDataList.forEachIndexed { index, byteArray ->
-            requestBody.addFormDataPart(
-                "images",  // 根据后端要求调整参数名（如images[]）
-                "frame_${System.currentTimeMillis()}_$index.jpg",
-                byteArray.toRequestBody("image/jpeg".toMediaType())
-            )
-        }
-
-        val request = Request.Builder()
-            .url(url)
-            .post(requestBody.build())
-            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-            .addHeader("Cache-Control", "no-cache")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    val responseCode = response.code
-                    val responseBody = response.body?.string() ?: "无返回内容"
-                    runOnUiThread {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            Toast.makeText(this@MainActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    println("Response Code: $responseCode")
-                    println("Response Body: $responseBody")
-                }
-            }
-        })
-    }
-
-    private fun uploadImage(bitmap: Bitmap) {
-        val url = "http://10.52.34.249:8080/detection/uploadImages"
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-
-        val mediaType = "image/jpeg".toMediaType()
-//        val requestBody = byteArray.toRequestBody(mediaType, 0, byteArray.size)
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            // 添加文件部分（图片）
-            .addFormDataPart(
-                "images", // 服务器接收文件的参数名
-                "image.jpg", // 文件名
-                byteArray.toRequestBody(mediaType, 0, byteArray.size)
-            )
-            // 添加文本参数（userId=1）
-            .addFormDataPart("userId", "1") // 参数名和值
-            .build()
-
-        val request = Request.Builder()
-            .url(url)
-            .post(requestBody)
-            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-            .addHeader("Cache-Control", "no-cache")
-            .build()
-
-        // 发起请求
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, "上传失败: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    val responseCode = response.code
-                    val responseBody = response.body?.string() ?: "无返回内容"
-                    runOnUiThread {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            Toast.makeText(this@MainActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    println("Response Code: $responseCode")
-                    println("Response Body: $responseBody")
-                }
-            }
-        })
-    }
-
+//    private fun uploadImages(imageDataList: List<ByteArray>) {
+//        val baseUrl = getBaseUrl()
+//        val url = "$baseUrl/detection/uploadImages"
+//
+//        // 构建多部分请求体
+//        val requestBody = MultipartBody.Builder()
+//            .setType(MultipartBody.FORM)
+//            .addFormDataPart("userId", "1")
+//
+//        // 添加多个图片文件
+//        imageDataList.forEachIndexed { index, byteArray ->
+//            requestBody.addFormDataPart(
+//                "images",  // 根据后端要求调整参数名（如images[]）
+//                "frame_${System.currentTimeMillis()}_$index.jpg",
+//                byteArray.toRequestBody("image/jpeg".toMediaType())
+//            )
+//        }
+//
+//        val request = Request.Builder()
+//            .url(url)
+//            .post(requestBody.build())
+//            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
+//            .addHeader("Cache-Control", "no-cache")
+//            .build()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace()
+//                runOnUiThread {
+//                    Toast.makeText(this@MainActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                response.use {
+//                    val responseCode = response.code
+//                    val responseBody = response.body?.string() ?: "无返回内容"
+//                    runOnUiThread {
+//                        if (!response.isSuccessful) {
+//                            Toast.makeText(
+//                                this@MainActivity,
+//                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        } else {
+//                            // 解析 JSON 响应
+//                            try {
+//                                val jsonResponse = JSONObject(responseBody)
+//                                val message = jsonResponse.getString("message")
+//
+//                                // 根据 message 字段的值决定是否跳转页面
+//                                when (message) {
+//                                    "hit"-> {
+//                                        // 检测到投篮
+//                                        incrementShots()
+//                                        incrementScore()
+//                                    }
+//                                    "miss"-> {
+//                                        incrementShots()
+//                                    }
+//                                    "receive" -> {
+//                                        // 未检测到投篮，仅显示上传成功消息
+//                                        Toast.makeText(this@MainActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+//                                    }
+//                                    else -> {
+//                                        // 未知响应，显示警告
+//                                        Toast.makeText(this@MainActivity, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+//                                    }
+//                                }
+//                            } catch (e: JSONException) {
+//                                e.printStackTrace()
+//                                Toast.makeText(this@MainActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+//                            }
+//                        }
+//                    }
+//                    println("Response Code: $responseCode")
+//                    println("Response Body: $responseBody")
+//                }
+//            }
+//        })
+//    }
 
     private val timerRunnable = object : Runnable {
         @SuppressLint("DefaultLocale")

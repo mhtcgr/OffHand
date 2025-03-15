@@ -1,13 +1,13 @@
 package com.example.offhand
 
+import AnalysisData
+import ApiResponse
+import ShootingAngles
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,10 +16,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -27,32 +24,27 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.FileOutputOptions
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
-import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.example.offhand.model.sendGetRequest
+import com.example.offhand.GlobalVariables.getBaseUrl
+import com.example.offhand.model.NetworkUtils
 import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -179,7 +171,41 @@ class OneShotActivity : AppCompatActivity() {
                     imageQueue.poll()?.let { images.add(it) }
                 }
                 if (images.size == 6) {
-                    uploadImages(images)
+                    NetworkUtils.uploadImages(
+                        images,
+                        onSuccess = {responseBody ->
+                            runOnUiThread {
+                                try {
+                                    val jsonResponse = JSONObject(responseBody)
+                                    val message = jsonResponse.getString("message")
+                                    when (message) {
+                                        "hit", "miss" -> {
+                                            // 检测到投篮，跳转到结果页面
+                                            val intent = Intent(this, OneShotEndActivity::class.java)
+                                            intent.putExtra("result", message) // 传递结果（hit 或 miss）
+                                            startActivity(intent)
+                                        }
+                                        "receive" -> {
+                                            // 未检测到投篮，仅显示上传成功消息
+                                            Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                                        }
+                                        else -> {
+                                            // 未知响应，显示警告
+                                            Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                    Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        },
+                        onFailure = { errorMessage ->
+                            runOnUiThread {
+                                Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -210,59 +236,86 @@ class OneShotActivity : AppCompatActivity() {
         return bitmap
     }
 
-    private fun uploadImages(imageDataList: List<ByteArray>) {
-        val url = "http://10.52.34.249:8080/detection/uploadImages"
-
-        // 构建多部分请求体
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("userId", "1")
-
-        // 添加多个图片文件
-        imageDataList.forEachIndexed { index, byteArray ->
-            requestBody.addFormDataPart(
-                "images",  // 根据后端要求调整参数名（如images[]）
-                "frame_${System.currentTimeMillis()}_$index.jpg",
-                byteArray.toRequestBody("image/jpeg".toMediaType())
-            )
-        }
-
-        val request = Request.Builder()
-            .url(url)
-            .post(requestBody.build())
-            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-            .addHeader("Cache-Control", "no-cache")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this@OneShotActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    val responseCode = response.code
-                    val responseBody = response.body?.string() ?: "无返回内容"
-                    runOnUiThread {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(
-                                this@OneShotActivity,
-                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    println("Response Code: $responseCode")
-                    println("Response Body: $responseBody")
-                }
-            }
-        })
-    }
+//    private fun uploadImages(imageDataList: List<ByteArray>) {
+//        val baseUrl = getBaseUrl()
+//        val url = "$baseUrl/detection/uploadImages"
+//
+//        // 构建多部分请求体
+//        val requestBody = MultipartBody.Builder()
+//            .setType(MultipartBody.FORM)
+//            .addFormDataPart("userId", "1")
+//
+//        // 添加多个图片文件
+//        imageDataList.forEachIndexed { index, byteArray ->
+//            requestBody.addFormDataPart(
+//                "images",  // 根据后端要求调整参数名（如images[]）
+//                "frame_${System.currentTimeMillis()}_$index.jpg",
+//                byteArray.toRequestBody("image/jpeg".toMediaType())
+//            )
+//        }
+//
+//        val request = Request.Builder()
+//            .url(url)
+//            .post(requestBody.build())
+//            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
+//            .addHeader("Cache-Control", "no-cache")
+//            .build()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace()
+//                runOnUiThread {
+//                    Toast.makeText(this@OneShotActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                response.use {
+//                    val responseCode = response.code
+//                    val responseBody = response.body?.string() ?: "无返回内容"
+//                    runOnUiThread {
+//                        if (!response.isSuccessful) {
+//                            Toast.makeText(
+//                                this@OneShotActivity,
+//                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        } else {
+//                            // 解析 JSON 响应
+//                            try {
+//                                val jsonResponse = JSONObject(responseBody)
+//                                val message = jsonResponse.getString("message")
+//
+//                                // 根据 message 字段的值决定是否跳转页面
+//                                when (message) {
+//                                    "hit", "miss" -> {
+//                                        // 检测到投篮，跳转到结果页面
+//                                        val intent = Intent(this@OneShotActivity, OneShotEndActivity::class.java)
+//                                        intent.putExtra("result", message) // 传递结果（hit 或 miss）
+//                                        startActivity(intent)
+//                                    }
+//                                    "receive" -> {
+//                                        // 未检测到投篮，仅显示上传成功消息
+//                                        Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+//                                    }
+//                                    else -> {
+//                                        // 未知响应，显示警告
+//                                        Toast.makeText(this@OneShotActivity, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+//                                    }
+//                                }
+//                            } catch (e: JSONException) {
+//                                e.printStackTrace()
+//                                Toast.makeText(this@OneShotActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+//                            }
+//                            Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+//                        }
+//                    }
+//                    println("Response Code: $responseCode")
+//                    println("Response Body: $responseBody")
+//                }
+//            }
+//        })
+//    }
 
     private fun showExitDialog() {
         AlertDialog.Builder(this)
@@ -272,7 +325,7 @@ class OneShotActivity : AppCompatActivity() {
 //                startActivity(intent)
 //                finish()
 
-                sendGetRequest(
+                NetworkUtils.sendGetRequest(
                     userId = "user_001",
                     recordId = "record_001",
                     onSuccess = { apiResponse, responseBody ->
@@ -280,8 +333,34 @@ class OneShotActivity : AppCompatActivity() {
                         runOnUiThread {
                             Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
                         }
+                        val apiRespon = ApiResponse(
+                            code = "200",
+                            message = "Success",
+                            data = AnalysisData(
+                                shootingAngles = ShootingAngles(
+                                    userId = "user_001",
+                                    recordId = "record_001",
+                                    aimingElbowAngle = 90.0,
+                                    aimingArmAngle = 80.0,
+                                    aimingBodyAngle = 10.0,
+                                    aimingKneeAngle = 140.0,
+                                    releaseElbowAngle = 180.0,
+                                    releaseArmAngle = 120.0,
+                                    releaseBodyAngle = 5.0,
+                                    releaseKneeAngle = 170.0,
+                                    releaseWristAngle = 90.0,
+                                    releaseBallAngle = 50.0,
+                                    theme = "Standard"
+                                ),
+                                analysis = "Your shooting form is good.",
+                                suggestions = "Keep your elbow aligned.",
+                                weaknessPoints = "Slight inconsistency in wrist angle."
+                            )
+                        )
+
                         val intent = Intent(this, OneShotEndActivity::class.java).apply {
-                            //putExtra("analysis_data", apiResponse) // 直接传递对象
+
+                            putExtra("analysis_data", apiRespon) // 直接传递对象
                         }
                         startActivity(intent)
                         finish()

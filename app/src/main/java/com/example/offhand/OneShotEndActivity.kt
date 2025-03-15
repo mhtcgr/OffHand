@@ -25,7 +25,7 @@ class OneShotEndActivity : AppCompatActivity() {
         analysisData?.let { data ->
             // 角度数据
             findViewById<TextView>(R.id.tv_aim_elbow).text = data.data.shootingAngles.aimingElbowAngle.toString()
-            findViewById<TextView>(R.id.tv_last_attempt).text = data.data.shootingAngles.aimingArmAngle.toString()
+            findViewById<TextView>(R.id.tv_release_elbow).text = data.data.shootingAngles.aimingArmAngle.toString()
 
             // ...其他角度数据
 
@@ -47,7 +47,7 @@ class OneShotEndActivity : AppCompatActivity() {
 
         //退出投篮按钮，点击后跳转到TrainSessionActivity
         return_button.setOnClickListener {
-            val intent = Intent(this, TrainingSessionActivity::class.java)
+            val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             finish()
         }

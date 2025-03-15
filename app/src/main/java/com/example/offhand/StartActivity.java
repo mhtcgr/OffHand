@@ -61,7 +61,8 @@ public class StartActivity extends AppCompatActivity {
 
     private void fetchTrainingData() {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl url = HttpUrl.parse("http://10.52.34.249:8080/history/beforeTraining")
+        String baseUrl = GlobalVariables.INSTANCE.getBaseUrl();
+        HttpUrl url = HttpUrl.parse(baseUrl+"/history/beforeTraining")
                 .newBuilder()
                 .addQueryParameter("userId", USER_ID)
                 .build();
