@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.java-websocket:Java-WebSocket:1.5.2'
     //implementation("org.webrtc:google-webrtc:1.0.30039@aar")
     api 'com.squareup.okhttp3:okhttp:3.14.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
     implementation(libs.okhttp)
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat

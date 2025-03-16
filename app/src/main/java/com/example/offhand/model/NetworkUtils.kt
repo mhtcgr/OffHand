@@ -14,7 +14,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import java.io.BufferedInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 object NetworkUtils {
@@ -55,6 +57,44 @@ object NetworkUtils {
                         val gson = Gson()
                         val apiResponse = gson.fromJson(responseBody, ApiResponse::class.java)
                         onSuccess(apiResponse, responseBody) // 传递解析后的数据和响应内容
+                    }
+                }
+            }
+        })
+    }
+
+    fun sendGetGIFRequest(
+        userId: String,
+        onSuccess: (InputStream) -> Unit, // 成功时返回 GIF 的 InputStream
+        onFailure: (Int, String) -> Unit // 失败时返回错误码和错误信息
+    ) {
+        val url = "$baseUrl/detailedAnalysis/getGIFByUserId?userId=$userId"
+
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .addHeader("Authorization", "your_token_here") // 替换为你的授权 Token
+            .build()
+
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(-1, e.localizedMessage ?: "网络请求失败") // 传递错误码和错误信息
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) {
+                        onFailure(response.code, response.body?.string() ?: "无返回内容") // 传递 HTTP 状态码和错误信息
+                    } else {
+                        val inputStream = response.body?.byteStream() // 获取 GIF 图片的 InputStream
+                        if (inputStream != null) {
+                            val bufferedInputStream = BufferedInputStream(inputStream)
+                            onSuccess(bufferedInputStream) // 传递支持标记的 InputStream
+                        } else {
+                            onFailure(-1, "无法获取 GIF 图片")
+                        }
                     }
                 }
             }

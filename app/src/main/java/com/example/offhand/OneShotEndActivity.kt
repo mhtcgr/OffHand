@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -17,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.offhand.model.NetworkUtils
 import org.json.JSONException
 import org.json.JSONObject
+import pl.droidsonroids.gif.GifDrawable
+import java.io.BufferedInputStream
 
 class OneShotEndActivity : AppCompatActivity() {
     private lateinit var next_shot_button: Button
@@ -85,11 +88,27 @@ class OneShotEndActivity : AppCompatActivity() {
             finish()
         }
 
-
+        NetworkUtils.sendGetGIFRequest(
+            userId = "1",
+            onSuccess = { inputStream ->
+                // 将 GIF 图片显示到 ImageView 中
+                val gifDrawable = GifDrawable(inputStream)
+                runOnUiThread {
+                    val imageView = findViewById<ImageView>(R.id.gifImageView)
+                    imageView.setImageDrawable(gifDrawable)
+                }
+            },
+            onFailure = { errorCode, errorMessage ->
+                runOnUiThread {
+                    Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
+
     private fun sendLLMRequest(question: String) {
         NetworkUtils.probeLLMRequest(
-            userId = "user_001",
+            userId = "user_002",
             recordId = "record_001",
             question = question,
             onSuccess = {responseBody ->
