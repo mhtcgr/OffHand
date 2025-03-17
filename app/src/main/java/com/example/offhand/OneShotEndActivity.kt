@@ -1,6 +1,5 @@
 package com.example.offhand
 
-import AnalysisData
 import ApiResponse
 import android.content.Intent
 import android.os.Bundle
@@ -13,17 +12,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.offhand.model.NetworkUtils
 import org.json.JSONException
 import org.json.JSONObject
 import pl.droidsonroids.gif.GifDrawable
-import java.io.BufferedInputStream
 
+@Suppress("DEPRECATION")
 class OneShotEndActivity : AppCompatActivity() {
-    private lateinit var next_shot_button: Button
-    private lateinit var return_button: Button
+    private lateinit var nextShotButton: Button
+    private lateinit var returnButton: Button
     private lateinit var inputBox: EditText
     private lateinit var askButton: Button
     private lateinit var answerArea: TextView
@@ -38,14 +35,14 @@ class OneShotEndActivity : AppCompatActivity() {
         // 填充数据到UI
         analysisData?.let { data ->
             // 角度数据
-            findViewById<TextView>(R.id.tv_aim_elbow).text = data.data.shootingAngles.aimingElbowAngle.toString()
-            findViewById<TextView>(R.id.tv_aim_arm).text = data.data.shootingAngles.aimingArmAngle.toString()
-            findViewById<TextView>(R.id.tv_aim_knee).text = data.data.shootingAngles.aimingKneeAngle.toString()
-            findViewById<TextView>(R.id.tv_aim_body).text = data.data.shootingAngles.aimingBodyAngle.toString()
-            findViewById<TextView>(R.id.tv_release_elbow).text = data.data.shootingAngles.releaseElbowAngle.toString()
-            findViewById<TextView>(R.id.tv_release_arm).text = data.data.shootingAngles.releaseArmAngle.toString()
-            findViewById<TextView>(R.id.tv_release_knee).text = data.data.shootingAngles.releaseKneeAngle.toString()
-            findViewById<TextView>(R.id.tv_release_body).text = data.data.shootingAngles.releaseBodyAngle.toString()
+            findViewById<TextView>(R.id.tv_aim_elbow).text = String.format(data.data.shootingAngles.aimingElbowAngle.toString())
+            findViewById<TextView>(R.id.tv_aim_arm).text = String.format(data.data.shootingAngles.aimingArmAngle.toString())
+            findViewById<TextView>(R.id.tv_aim_knee).text = String.format(data.data.shootingAngles.aimingKneeAngle.toString())
+            findViewById<TextView>(R.id.tv_aim_body).text = String.format(data.data.shootingAngles.aimingBodyAngle.toString())
+            findViewById<TextView>(R.id.tv_release_elbow).text = String.format(data.data.shootingAngles.releaseElbowAngle.toString())
+            findViewById<TextView>(R.id.tv_release_arm).text = String.format(data.data.shootingAngles.releaseArmAngle.toString())
+            findViewById<TextView>(R.id.tv_release_knee).text = String.format(data.data.shootingAngles.releaseKneeAngle.toString())
+            findViewById<TextView>(R.id.tv_release_body).text = String.format(data.data.shootingAngles.releaseBodyAngle.toString())
             // ...其他角度数据
 
             // 分析建议
@@ -72,17 +69,17 @@ class OneShotEndActivity : AppCompatActivity() {
             }
         }
 
-        next_shot_button = findViewById(R.id.next_shot_button)
-        return_button = findViewById(R.id.return_button)
+        nextShotButton = findViewById(R.id.next_shot_button)
+        returnButton = findViewById(R.id.return_button)
         //继续投篮按钮，点击后跳转到OneShotActivity
-        next_shot_button.setOnClickListener {
+        nextShotButton.setOnClickListener {
             val intent = Intent(this, OneShotActivity::class.java)
             startActivity(intent)
             finish()
         }
 
         //退出投篮按钮，点击后跳转到TrainSessionActivity
-        return_button.setOnClickListener {
+        returnButton.setOnClickListener {
             val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             finish()
@@ -112,8 +109,6 @@ class OneShotEndActivity : AppCompatActivity() {
             recordId = "record_001",
             question = question,
             onSuccess = {responseBody ->
-
-
                 runOnUiThread {
                     loadingProgressBar.visibility = View.GONE
                     try {

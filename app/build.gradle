@@ -43,7 +43,6 @@ dependencies {
     implementation "androidx.camera:camera-video:${camerax_version}"
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'org.java-websocket:Java-WebSocket:1.5.2'
-    //implementation("org.webrtc:google-webrtc:1.0.30039@aar")
     api 'com.squareup.okhttp3:okhttp:3.14.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
     implementation(libs.okhttp)

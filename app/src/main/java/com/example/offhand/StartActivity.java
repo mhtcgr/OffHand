@@ -3,12 +3,15 @@ package com.example.offhand;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -57,6 +60,10 @@ public class StartActivity extends AppCompatActivity {
         findViewById(R.id.btnStartTraining).setOnClickListener(v -> {
             fetchTrainingData();
         });
+
+        findViewById(R.id.btnUploadVideo).setOnClickListener(v -> {
+            openVideoPicker();
+        });
     }
 
     private void fetchTrainingData() {
@@ -102,5 +109,32 @@ public class StartActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // 打开视频选择器
+    private void openVideoPicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("video/*");
+        startActivityForResult(intent, 1);
+    }
+
+    // 处理视频选择结果
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            Uri videoUri = data.getData();
+            if (videoUri != null) {
+                // 上传视频
+                uploadVideo(videoUri);
+            }
+        }
+    }
+
+    // 上传视频
+    private void uploadVideo(Uri videoUri) {
+        // TODO: 实现视频上传逻辑
+        Toast.makeText(this, "视频已选择: " + videoUri, Toast.LENGTH_SHORT).show();
     }
 }

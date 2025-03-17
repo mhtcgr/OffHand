@@ -3,20 +3,11 @@ package com.example.offhand
 import ApiResponse
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.offhand.model.NetworkUtils
-import com.google.gson.Gson
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okio.IOException
 
 class MultiShotEndActivity : AppCompatActivity() {
 
@@ -24,7 +15,6 @@ class MultiShotEndActivity : AppCompatActivity() {
     private lateinit var scoreTextView: TextView
     private lateinit var shotsTextView: TextView
     private lateinit var button_next: Button
-    private val client = OkHttpClient()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_shot_end)
@@ -65,30 +55,6 @@ class MultiShotEndActivity : AppCompatActivity() {
                     }
                 }
             )
-        }
-    }
-
-
-    private fun handleApiResponse(apiResponse: ApiResponse) {
-        // 检查状态码
-        if (apiResponse.code == "200") {
-            // 获取数据
-            val shootingAngles = apiResponse.data.shootingAngles
-            val analysis = apiResponse.data.analysis
-            val suggestions = apiResponse.data.suggestions
-            val weaknessPoints = apiResponse.data.weaknessPoints
-
-            // 在UI中显示数据
-//            displayShootingAngles(shootingAngles)
-//            displayAnalysis(analysis)
-//            displaySuggestions(suggestions)
-//            displayWeaknessPoints(weaknessPoints)
-        } else {
-            Toast.makeText(
-                this@MultiShotEndActivity,
-                "请求失败: ${apiResponse.message}",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 }

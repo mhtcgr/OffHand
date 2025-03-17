@@ -3,6 +3,7 @@ package com.example.offhand.model
 // NetworkUtils.kt
 import ApiResponse
 import ProbeRequest
+import TrainSettingRequest
 import com.example.offhand.GlobalVariables
 import com.example.offhand.GlobalVariables.getBaseUrl
 import com.google.gson.Gson
@@ -182,6 +183,44 @@ object NetworkUtils {
                     onSuccess(responseBody) // 调用页面解析 message
                 } else {
                     onFailure("HTTP ${response.code}, 错误信息: $responseBody")
+                }
+            }
+        })
+    }
+
+    fun postTrainSettingRequest(
+        userId: String,
+        theme: String,
+        trainingMethod: String,
+        onSuccess: (responseBody: String) -> Unit,
+        onFailure: (errorMessage: String) -> Unit
+    ) {
+        val url = "$baseUrl/detection/setting"
+        val trainSettingRequest = TrainSettingRequest(userId, theme, trainingMethod)
+
+        val json = Gson().toJson(trainSettingRequest)
+
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .addHeader("Authorization", token)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(e.message ?: "未知错误")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) {
+                        onFailure("HTTP ${response.code}, 错误信息: ${response.body?.string() ?: "无返回内容"}")
+                    } else {
+                        val responseBody = response.body?.string() ?: "无返回内容"
+                        onSuccess(responseBody)
+                    }
                 }
             }
         })

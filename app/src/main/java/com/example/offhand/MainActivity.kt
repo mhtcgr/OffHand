@@ -52,6 +52,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.max
 
 
 //多次投篮的主要界面
@@ -72,8 +73,6 @@ class MainActivity : AppCompatActivity() {
 
     private var score = 0
     private var shots = 0
-
-    private val client = OkHttpClient()
 
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
@@ -200,51 +199,23 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (images.size == 6) {
                     // 调用 NetworkUtils 上传图片
-                    NetworkUtils.uploadImages(
-                        images,
-                        onSuccess = {responseBody ->
-                            runOnUiThread {
-                                try {
-                                    val jsonResponse = JSONObject(responseBody)
-                                    val message = jsonResponse.getString("message")
-                                    when (message) {
-                                        "hit" -> {
-                                            // 检测到投篮
-                                            incrementShots()
-                                            incrementScore()
-                                        }
-                                        "miss" -> {
-                                            incrementShots()
-                                        }
-                                        "receive" -> {
-                                            // 未检测到投篮，仅显示上传成功消息
-                                            Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-                                        }
-                                        else -> {
-                                            // 未知响应，显示警告
-                                            Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-                                } catch (e: JSONException) {
-                                    e.printStackTrace()
-                                    Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        },
-                        onFailure = { errorMessage ->
-                            runOnUiThread {
-                                Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
+                    upLoadImage(images)
                 }
             }
         }
     }
 
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val originalWidth = bitmap.width
+        val originalHeight = bitmap.height
+
+        // 计算裁剪区域
+        val scale = max(512.toFloat() / originalWidth, 288.toFloat() / originalHeight)
+        val scaledWidth = (originalWidth * scale).toInt()
+        val scaledHeight = (originalHeight * scale).toInt()
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 512, 288, true)
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
     }
 
@@ -263,87 +234,45 @@ class MainActivity : AppCompatActivity() {
         return bitmap
     }
 
-//    private fun uploadImages(imageDataList: List<ByteArray>) {
-//        val baseUrl = getBaseUrl()
-//        val url = "$baseUrl/detection/uploadImages"
-//
-//        // 构建多部分请求体
-//        val requestBody = MultipartBody.Builder()
-//            .setType(MultipartBody.FORM)
-//            .addFormDataPart("userId", "1")
-//
-//        // 添加多个图片文件
-//        imageDataList.forEachIndexed { index, byteArray ->
-//            requestBody.addFormDataPart(
-//                "images",  // 根据后端要求调整参数名（如images[]）
-//                "frame_${System.currentTimeMillis()}_$index.jpg",
-//                byteArray.toRequestBody("image/jpeg".toMediaType())
-//            )
-//        }
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .post(requestBody.build())
-//            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-//            .addHeader("Cache-Control", "no-cache")
-//            .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                e.printStackTrace()
-//                runOnUiThread {
-//                    Toast.makeText(this@MainActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                response.use {
-//                    val responseCode = response.code
-//                    val responseBody = response.body?.string() ?: "无返回内容"
-//                    runOnUiThread {
-//                        if (!response.isSuccessful) {
-//                            Toast.makeText(
-//                                this@MainActivity,
-//                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//                        } else {
-//                            // 解析 JSON 响应
-//                            try {
-//                                val jsonResponse = JSONObject(responseBody)
-//                                val message = jsonResponse.getString("message")
-//
-//                                // 根据 message 字段的值决定是否跳转页面
-//                                when (message) {
-//                                    "hit"-> {
-//                                        // 检测到投篮
-//                                        incrementShots()
-//                                        incrementScore()
-//                                    }
-//                                    "miss"-> {
-//                                        incrementShots()
-//                                    }
-//                                    "receive" -> {
-//                                        // 未检测到投篮，仅显示上传成功消息
-//                                        Toast.makeText(this@MainActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-//                                    }
-//                                    else -> {
-//                                        // 未知响应，显示警告
-//                                        Toast.makeText(this@MainActivity, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
-//                                    }
-//                                }
-//                            } catch (e: JSONException) {
-//                                e.printStackTrace()
-//                                Toast.makeText(this@MainActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
-//                            }
-//                        }
-//                    }
-//                    println("Response Code: $responseCode")
-//                    println("Response Body: $responseBody")
-//                }
-//            }
-//        })
-//    }
+    private fun upLoadImage(images: List<ByteArray>){
+        NetworkUtils.uploadImages(
+            images,
+            onSuccess = {responseBody ->
+                runOnUiThread {
+                    try {
+                        val jsonResponse = JSONObject(responseBody)
+                        val message = jsonResponse.getString("message")
+                        when (message) {
+                            "hit" -> {
+                                // 检测到投篮
+                                incrementShots()
+                                incrementScore()
+                            }
+                            "miss" -> {
+                                incrementShots()
+                            }
+                            "receive" -> {
+                                // 未检测到投篮，仅显示上传成功消息
+                                Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                // 未知响应，显示警告
+                                Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+            onFailure = { errorMessage ->
+                runOnUiThread {
+                    Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
 
     private val timerRunnable = object : Runnable {
         @SuppressLint("DefaultLocale")
@@ -408,11 +337,11 @@ class MainActivity : AppCompatActivity() {
                         startPauseButton.text = "停止"
                     }
                     is VideoRecordEvent.Finalize -> {
-                        if (!recordEvent.hasError()) {
-                            Toast.makeText(this, "Video saved: ${videoFile.absolutePath}", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this, "Video capture failed: ${recordEvent.error}", Toast.LENGTH_SHORT).show()
-                        }
+//                        if (!recordEvent.hasError()) {
+//                            Toast.makeText(this, "Video saved: ${videoFile.absolutePath}", Toast.LENGTH_SHORT).show()
+//                        } else {
+//                            Toast.makeText(this, "Video capture failed: ${recordEvent.error}", Toast.LENGTH_SHORT).show()
+//                        }
                         isRecording = false
                         startPauseButton.text = "开始"
                     }
@@ -430,12 +359,6 @@ class MainActivity : AppCompatActivity() {
 
         val videoDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "MyAppVideos")
         val latestVideoFile = videoDir.listFiles()?.maxByOrNull { it.lastModified() }
-
-        if (latestVideoFile != null) {
-            //uploadVideo(latestVideoFile)
-        } else {
-            Toast.makeText(this, "未找到录制的视频", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun onDestroy() {

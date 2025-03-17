@@ -31,31 +31,29 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.example.offhand.GlobalVariables.getBaseUrl
 import com.example.offhand.model.NetworkUtils
 import com.google.common.util.concurrent.ListenableFuture
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.max
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.util.AttributeSet
+import android.view.View
+
 
 class OneShotActivity : AppCompatActivity() {
     private lateinit var closeButton: Button
 
     private var previewView: PreviewView? = null
-    private val client = OkHttpClient()
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
 
     private var seconds = 0
@@ -166,20 +164,24 @@ class OneShotActivity : AppCompatActivity() {
             imageQueue.add(byteArray)
             // 当队列达到6张时立即触发上传
             if (imageQueue.size >= 6) {
-                val images = mutableListOf<ByteArray>()
-                repeat(6) {
-                    imageQueue.poll()?.let { images.add(it) }
-                }
-                if (images.size == 6) {
-                    upLoadImage(images)
-                }
+                val images = imageQueue.take(6).toList()
+                imageQueue.clear()
+                upLoadImage(images)
             }
         }
     }
 
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val originalWidth = bitmap.width
+        val originalHeight = bitmap.height
+
+        // 计算裁剪区域
+        val scale = max(512.toFloat() / originalWidth, 288.toFloat() / originalHeight)
+        val scaledWidth = (originalWidth * scale).toInt()
+        val scaledHeight = (originalHeight * scale).toInt()
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 512, 288, true)
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
     }
 
@@ -209,8 +211,7 @@ class OneShotActivity : AppCompatActivity() {
                 runOnUiThread {
                     try {
                         val jsonResponse = JSONObject(responseBody)
-                        val message = jsonResponse.getString("message")
-                        when (message) {
+                        when (val message = jsonResponse.getString("message")) {
                             "hit", "miss" -> {
                                 // 检测到投篮，跳转到结果页面
                                 val intent = Intent(this, OneShotEndActivity::class.java)
@@ -239,99 +240,15 @@ class OneShotActivity : AppCompatActivity() {
             }
         )
     }
-//    private fun uploadImages(imageDataList: List<ByteArray>) {
-//        val baseUrl = getBaseUrl()
-//        val url = "$baseUrl/detection/uploadImages"
-//
-//        // 构建多部分请求体
-//        val requestBody = MultipartBody.Builder()
-//            .setType(MultipartBody.FORM)
-//            .addFormDataPart("userId", "1")
-//
-//        // 添加多个图片文件
-//        imageDataList.forEachIndexed { index, byteArray ->
-//            requestBody.addFormDataPart(
-//                "images",  // 根据后端要求调整参数名（如images[]）
-//                "frame_${System.currentTimeMillis()}_$index.jpg",
-//                byteArray.toRequestBody("image/jpeg".toMediaType())
-//            )
-//        }
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .post(requestBody.build())
-//            .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I")
-//            .addHeader("Cache-Control", "no-cache")
-//            .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                e.printStackTrace()
-//                runOnUiThread {
-//                    Toast.makeText(this@OneShotActivity, "上传失败: ${e.message}", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                response.use {
-//                    val responseCode = response.code
-//                    val responseBody = response.body?.string() ?: "无返回内容"
-//                    runOnUiThread {
-//                        if (!response.isSuccessful) {
-//                            Toast.makeText(
-//                                this@OneShotActivity,
-//                                "上传失败: HTTP $responseCode, 错误信息: $responseBody",
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//                        } else {
-//                            // 解析 JSON 响应
-//                            try {
-//                                val jsonResponse = JSONObject(responseBody)
-//                                val message = jsonResponse.getString("message")
-//
-//                                // 根据 message 字段的值决定是否跳转页面
-//                                when (message) {
-//                                    "hit", "miss" -> {
-//                                        // 检测到投篮，跳转到结果页面
-//                                        val intent = Intent(this@OneShotActivity, OneShotEndActivity::class.java)
-//                                        intent.putExtra("result", message) // 传递结果（hit 或 miss）
-//                                        startActivity(intent)
-//                                    }
-//                                    "receive" -> {
-//                                        // 未检测到投篮，仅显示上传成功消息
-//                                        Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-//                                    }
-//                                    else -> {
-//                                        // 未知响应，显示警告
-//                                        Toast.makeText(this@OneShotActivity, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
-//                                    }
-//                                }
-//                            } catch (e: JSONException) {
-//                                e.printStackTrace()
-//                                Toast.makeText(this@OneShotActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
-//                            }
-//                            Toast.makeText(this@OneShotActivity, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-//                    println("Response Code: $responseCode")
-//                    println("Response Body: $responseBody")
-//                }
-//            }
-//        })
-//    }
 
     private fun showExitDialog() {
         AlertDialog.Builder(this)
             .setMessage("确认退出？")
             .setPositiveButton("确认退出") { _, _ ->//点击确认退出触发发送get请求
-//                val intent = Intent(this, OneShotEndActivity::class.java)
-//                startActivity(intent)
-//                finish()
-
                 NetworkUtils.sendGetRequest(
                     userId = "user_001",
                     recordId = "record_001",
-                    onSuccess = { apiResponse, responseBody ->
+                    onSuccess = { _, responseBody ->
                         // 处理成功响应
                         runOnUiThread {
                             Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
@@ -375,6 +292,10 @@ class OneShotActivity : AppCompatActivity() {
                         }
                     }
                 )
+
+                val intent = Intent(this, OneShotEndActivity::class.java)
+                startActivity(intent)
+                finish()
 
             }
             .setNegativeButton("再想想", null)

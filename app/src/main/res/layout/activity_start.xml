@@ -34,6 +34,22 @@
         app:strokeWidth="1dp"
         android:layout_marginBottom="32dp"/>
 
+    <!-- 占位空间，将按钮推到下半部分 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUploadVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上传投篮视频"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primaryColor"
+        app:cornerRadius="8dp"
+        android:layout_marginBottom="16dp"/>
+
     <!-- 直接开始训练按钮 -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStartTraining"

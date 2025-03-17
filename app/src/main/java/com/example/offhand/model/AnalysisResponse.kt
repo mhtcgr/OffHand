@@ -40,3 +40,9 @@ data class ProbeRequest(
     val inquiry: String,
     val context: Boolean
 )
+
+data class TrainSettingRequest(
+    val userId: String,
+    val theme: String,
+    val trainingMethod: String
+)

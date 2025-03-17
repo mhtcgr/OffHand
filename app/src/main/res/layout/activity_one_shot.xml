@@ -8,6 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.example.offhand.view.BasketBoxView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <!-- Close Button -->
     <Button
         android:id="@+id/closeButton"
