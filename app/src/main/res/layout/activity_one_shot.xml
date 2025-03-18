@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,14 +16,26 @@
     <!-- Close Button -->
     <Button
         android:id="@+id/closeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/AppButton.Small"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:text="✖"
         android:layout_gravity="top|end"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:elevation="4dp" />
 
-    <!-- Existing layout elements -->
+    <!-- Instructions -->
+    <TextView
+        android:id="@+id/instructionsText"
+        style="@style/AppText.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="将篮筐放入框内"
+        android:textColor="@color/white"
+        android:background="#80000000"
+        android:padding="8dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_margin="16dp" />
 
 </FrameLayout>

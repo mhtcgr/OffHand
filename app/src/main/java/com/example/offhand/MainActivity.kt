@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
@@ -33,6 +34,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.example.offhand.GlobalVariables.getBaseUrl
+import com.example.offhand.model.ImageProcess.bitmapToByteArray
+import com.example.offhand.model.ImageProcess.imageProxyToBitmap
+import com.example.offhand.model.ImageProcess.resizeImage
 import com.example.offhand.model.NetworkUtils
 import com.google.common.util.concurrent.ListenableFuture
 import okhttp3.Call
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     private var score = 0
     private var shots = 0
-
+    private var cachedImage: ByteArray? = null // 缓存当前帧的图像数据
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -205,35 +209,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
-        val originalWidth = bitmap.width
-        val originalHeight = bitmap.height
-
-        // 计算裁剪区域
-        val scale = max(512.toFloat() / originalWidth, 288.toFloat() / originalHeight)
-        val scaledWidth = (originalWidth * scale).toInt()
-        val scaledHeight = (originalHeight * scale).toInt()
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 512, 288, true)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
-        return byteArrayOutputStream.toByteArray()
-    }
-
-    private fun imageProxyToBitmap(image: ImageProxy): Bitmap {
-        val width = image.width
-        val height = image.height
-        val buffer = image.planes[0].buffer
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
-
-        // 创建 ARGB_8888 格式的 Bitmap
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val byteBuffer = ByteBuffer.wrap(bytes)
-        bitmap.copyPixelsFromBuffer(byteBuffer)
-
-        return bitmap
-    }
-
     private fun upLoadImage(images: List<ByteArray>){
         NetworkUtils.uploadImages(
             images,
@@ -254,6 +229,13 @@ class MainActivity : AppCompatActivity() {
                             "receive" -> {
                                 // 未检测到投篮，仅显示上传成功消息
                                 Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                            }
+                            "release" -> {
+                                // 收到 release 消息，上传当前帧的图像
+                                cachedImage?.let { imageData ->
+                                    val resizedImage = resizeImage(imageData, 1024, 576) // 调整图像大小
+                                    upLoadImage(listOf(resizedImage))
+                                }
                             }
                             else -> {
                                 // 未知响应，显示警告
@@ -297,10 +279,15 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("SCORE", scoreTextView.text.toString())
                 intent.putExtra("SHOTS", shotsTextView.text.toString())
                 startActivity(intent)
+                //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) // 强制横屏
                 finish()
             }
             .setNegativeButton("再想想", null)
             .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+            }
     }
 
     @SuppressLint("SetTextI18n")

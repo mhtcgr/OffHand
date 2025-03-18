@@ -1,7 +1,10 @@
 package com.example.offhand;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -39,6 +42,43 @@ public class TrainingActivity extends AppCompatActivity {
         findViewById(R.id.btnStartTraining).setOnClickListener(v -> {
             startActivity(new Intent(TrainingActivity.this, TrainingSessionActivity.class));
         });
+
+        // 找到底部导航栏中的按钮
+        LinearLayout btnHome = findViewById(R.id.btn_home);
+        LinearLayout btnTraining = findViewById(R.id.btn_training);
+
+
+        // 设置首页按钮点击事件
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在StartActivity，则不需要重新启动
+                    Intent intent = new Intent(TrainingActivity.this, StartActivity.class);
+                    startActivity(intent);
+                    finish(); // 结束当前Activity
+//
+            }
+        });
+
+        // 设置训练按钮点击事件
+        btnTraining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(TrainingActivity.this, TrainingActivity.class);
+//                startActivity(intent);
+//                finish(); // 结束当前Activity
+            }
+        });
+        LinearLayout btnTutorial = findViewById(R.id.btn_tutorial);
+        btnTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在TrainingActivity，则不需要重新启动
+                Intent intent = new Intent(TrainingActivity.this, TutorialActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
     }
 
     private void initViews() {
@@ -56,6 +96,7 @@ public class TrainingActivity extends AppCompatActivity {
         tvSevenDaysSuggestions = findViewById(R.id.tv_seven_days_suggestions);
     }
 
+    @SuppressLint("DefaultLocale")
     private void displayTrainingData(MainApiResponse.MainData data) {
         // 填充最新训练数据
         LatestTrainingSummary latest = data.latestTrainingSummary;
@@ -63,8 +104,13 @@ public class TrainingActivity extends AppCompatActivity {
             tvLastDate.setText(latest.trainingDate != null ? latest.trainingDate : "暂无日期");
             tvLastHit.setText(String.format("命中：%d次", latest.hits));
             tvLastAttempt.setText(String.format("尝试：%d次", latest.attempts));
-            tvShootingType.setText(String.format("投篮类型：%s", latest.shootingType != null ? latest.shootingType : "未知"));
-            tvLastSuggestions.setText(String.format("建议：%s", latest.suggestions != null ? latest.suggestions : "暂无建议"));
+//            if ("middle_shoot".equals(latest.shootingType)) {
+//                tvShootingType.setText("中距离投篮");
+//            } else if ("three_point_shoot".equals(latest.shootingType )) {
+//                tvShootingType.setText("三分投篮");
+//            }
+            tvShootingType.setText(String.format("投篮类型：中距离投篮"));
+            tvLastSuggestions.setText(String.format("%s", latest.suggestions != null ? latest.suggestions : "暂无建议"));
         }
 
         // 填充近七天统计
@@ -73,7 +119,7 @@ public class TrainingActivity extends AppCompatActivity {
             tvSevenDaysCount.setText(String.format("训练次数：%d次", recent.trainingCount));
             tvSevenDaysHit.setText(String.format("命中：%d次", recent.hits));
             tvSevenDaysAttempt.setText(String.format("尝试：%d次", recent.attempts));
-            tvSevenDaysSuggestions.setText(String.format("建议：%s", recent.suggestions != null ? recent.suggestions : "暂无建议"));
+            tvSevenDaysSuggestions.setText(String.format("%s", recent.suggestions != null ? recent.suggestions : "暂无建议"));
         }
     }
 }

@@ -5,58 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@color/white">
+    android:background="@drawable/bg_main">
 
-    <!-- 添加蓝牙手表按钮 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBluetoothWatch"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="添加您的蓝牙手表"
-        android:textColor="@color/primaryColor"
-        app:cornerRadius="8dp"
-        app:strokeColor="@color/primaryColor"
-        app:strokeWidth="1dp"
-        android:layout_marginBottom="16dp"/>
+    <!-- Top Bar -->
+    <include layout="@layout/layout_top_bar" />
 
-    <!-- 添加蓝牙耳机按钮 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBluetoothEarphone"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="添加您的蓝牙耳机"
-        android:textColor="@color/primaryColor"
-        app:cornerRadius="8dp"
-        app:strokeColor="@color/primaryColor"
-        app:strokeWidth="1dp"
-        android:layout_marginBottom="32dp"/>
-
-    <!-- 占位空间，将按钮推到下半部分 -->
-    <View
+    <!-- Main Content -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUploadVideo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="上传投篮视频"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/primaryColor"
-        app:cornerRadius="8dp"
-        android:layout_marginBottom="16dp"/>
+        <!-- 添加蓝牙手表按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBluetoothWatch"
+            style="@style/AppButton.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="添加您的蓝牙手表"
+            android:textColor="@color/white"
+            android:layout_marginBottom="16dp"/>
 
-    <!-- 直接开始训练按钮 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnStartTraining"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="直接开始训练"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/primaryColor"
-        app:cornerRadius="8dp"/>
+        <!-- 添加蓝牙耳机按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBluetoothEarphone"
+            style="@style/AppButton.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="添加您的蓝牙耳机"
+            android:textColor="@color/white"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- 占位空间，将按钮推到下半部分 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUploadVideo"
+            style="@style/AppButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="上传投篮视频"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- 直接开始训练按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartTraining"
+            style="@style/AppButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="直接开始训练"/>
+    </LinearLayout>
+
+    <!-- Bottom Bar -->
+    <include layout="@layout/layout_bottom_bar" />
 </LinearLayout>

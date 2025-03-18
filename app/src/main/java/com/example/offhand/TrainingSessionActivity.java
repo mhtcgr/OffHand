@@ -3,7 +3,9 @@ package com.example.offhand;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,6 +40,43 @@ public class TrainingSessionActivity extends AppCompatActivity {
 
         setupButtonSelection();
         setupReadyButton();
+        // 找到底部导航栏中的按钮
+        LinearLayout btnHome = findViewById(R.id.btn_home);
+        LinearLayout btnTraining = findViewById(R.id.btn_training);
+
+
+        // 设置首页按钮点击事件
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在StartActivity，则不需要重新启动
+                Intent intent = new Intent(TrainingSessionActivity.this, StartActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
+
+        // 设置训练按钮点击事件
+        btnTraining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在TrainingActivity，则不需要重新启动
+                Intent intent = new Intent(TrainingSessionActivity.this, TrainingActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
+
+        LinearLayout btnTutorial = findViewById(R.id.btn_tutorial);
+        btnTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在TrainingActivity，则不需要重新启动
+                Intent intent = new Intent(TrainingSessionActivity.this, TutorialActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
     }
 
     private void setupButtonSelection() {

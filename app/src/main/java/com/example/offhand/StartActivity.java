@@ -3,11 +3,16 @@ package com.example.offhand;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,9 +28,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.offhand.model.MainApiResponse;
+import com.example.offhand.model.NetworkUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,6 +55,45 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        // 找到底部导航栏中的按钮
+        LinearLayout btnHome = findViewById(R.id.btn_home);
+        LinearLayout btnTraining = findViewById(R.id.btn_training);
+
+
+        // 设置首页按钮点击事件
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在StartActivity，则不需要重新启动
+//                if (!(StartActivity.this instanceof StartActivity)) {
+//                    Intent intent = new Intent(StartActivity.this, StartActivity.class);
+//                    startActivity(intent);
+//                    finish(); // 结束当前Activity
+//                }
+            }
+        });
+
+        // 设置训练按钮点击事件
+        btnTraining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在TrainingActivity，则不需要重新启动
+                Intent intent = new Intent(StartActivity.this, TrainingActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
+        LinearLayout btnTutorial = findViewById(R.id.btn_tutorial);
+        btnTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 如果当前已经在TrainingActivity，则不需要重新启动
+                Intent intent = new Intent(StartActivity.this, TutorialActivity.class);
+                startActivity(intent);
+                finish(); // 结束当前Activity
+            }
+        });
 
         // 蓝牙手表按钮
         findViewById(R.id.btnBluetoothWatch).setOnClickListener(v -> {
@@ -62,7 +113,10 @@ public class StartActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnUploadVideo).setOnClickListener(v -> {
-            openVideoPicker();
+            //跳转到VideoSessionActivity
+            Intent intent = new Intent(StartActivity.this, VideoSessionActivity.class);
+            startActivity(intent);
+            //openVideoPicker();
         });
     }
 
@@ -135,6 +189,100 @@ public class StartActivity extends AppCompatActivity {
     // 上传视频
     private void uploadVideo(Uri videoUri) {
         // TODO: 实现视频上传逻辑
+        new VideoFrameExtractorTask().execute(videoUri);
         Toast.makeText(this, "视频已选择: " + videoUri, Toast.LENGTH_SHORT).show();
     }
+
+    private class VideoFrameExtractorTask extends AsyncTask<Uri, Void, List<byte[]>> {
+
+        @Override
+        protected List<byte[]> doInBackground(Uri... uris) {
+            Uri videoUri = uris[0];
+            List<byte[]> imageList = new ArrayList<>();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+            try {
+                retriever.setDataSource(getApplicationContext(), videoUri);
+
+                // 获取视频时长（毫秒）
+                String durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                assert durationStr != null;
+                long durationMs = Long.parseLong(durationStr);
+
+                // 每秒提取 6 帧
+                for (long timeMs = 0; timeMs < durationMs; timeMs += 1000 / 6) {
+                    // 获取当前时间点的帧
+                    Bitmap bitmap = retriever.getFrameAtTime(timeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
+                    if (bitmap != null) {
+                        // 将 Bitmap 转换为字节数组
+                        byte[] imageData = bitmapToByteArray(bitmap);
+                        imageList.add(imageData);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    retriever.release();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return imageList;
+        }
+
+        @Override
+        protected void onPostExecute(List<byte[]> imageList) {
+            if (imageList != null && !imageList.isEmpty()) {
+                // 调用 uploadImages 方法上传图片列表
+                NetworkUtils.INSTANCE.uploadImages(
+                        imageList,
+                        responseBody -> {
+                            // 处理上传成功逻辑
+                            runOnUiThread(() -> {
+                                try {
+                                    JSONObject jsonResponse = new JSONObject(responseBody);
+                                    String message = jsonResponse.getString("message");
+                                    switch (message) {
+                                        case "hit":
+                                        case "miss":
+                                        case "receive":
+                                            // 未检测到投篮，仅显示上传成功消息
+                                            Toast.makeText(StartActivity.this, "上传成功: " + responseBody, Toast.LENGTH_LONG).show();
+                                            break;
+                                        default:
+                                            // 未知响应，显示警告
+                                            Toast.makeText(StartActivity.this, "未知响应: " + responseBody, Toast.LENGTH_LONG).show();
+                                            break;
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(StartActivity.this, "解析响应失败: " + responseBody, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            return null;
+                        },
+                        errorMessage -> {
+                            // 处理上传失败逻辑
+                            runOnUiThread(() -> {
+                                Toast.makeText(StartActivity.this, "上传失败: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            });
+                            return null;
+                        }
+                );
+            } else {
+                // 无法提取视频帧
+                Toast.makeText(StartActivity.this, "无法提取视频帧", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // 将 Bitmap 转换为字节数组
+    private byte[] bitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        return stream.toByteArray();
+    }
 }
+

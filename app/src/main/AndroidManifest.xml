@@ -24,37 +24,53 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".TutorialActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".VideoSessionActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
             android:name=".MultiShotAdviseActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".OneShotEndActivity"
-            android:exported="true"></activity>
+            android:screenOrientation="landscape"
+            android:exported="true" />
         <activity
             android:name=".TrainingActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".StartActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".TrainingSessionActivity"
-            android:exported="true"></activity>
+            android:screenOrientation="portrait"
+            android:exported="true" />
         <activity
             android:name=".OneShotActivity"
-            android:exported="true"></activity>
+            android:screenOrientation="landscape"
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="landscape"
             android:exported="false" />
         <activity
             android:name=".TipsActivity"
-            android:exported="true"></activity>
+            android:screenOrientation="landscape"
+            android:exported="true" />
         <activity
             android:name=".MultiShotEndActivity"
+            android:screenOrientation="landscape"
             android:exported="false" />
     </application>
 

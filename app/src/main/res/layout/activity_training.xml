@@ -1,177 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:orientation="vertical"
+    android:background="@drawable/bg_main">
 
-    <LinearLayout
+    <!-- Top Bar -->
+    <include layout="@layout/layout_top_bar" />
+
+    <!-- Main Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!-- 最新训练数据 -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="最新训练数据"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="16dp"/>
-<!--            android:drawableStart="@drawable/ic_training" &lt;!&ndash; 添加图标 &ndash;&gt;-->
-<!--            android:drawablePadding="8dp"-->
+            android:orientation="vertical"
+            android:padding="16dp">
 
-
-        <!-- 数据展示区域 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
+            <!-- 最新训练数据 -->
+            <TextView
+                style="@style/AppText.Subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:text="最新训练数据"
+                android:layout_marginBottom="16dp"/>
 
-                <TextView
-                    android:id="@+id/tv_last_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
+            <!-- 数据展示区域 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:id="@+id/tv_last_hit"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:id="@+id/tv_last_date"
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        android:layout_marginBottom="12dp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_last_hit"
+                            style="@style/AppText.Body"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/tv_last_attempt"
+                            style="@style/AppText.Body"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
                     <TextView
-                        android:id="@+id/tv_last_attempt"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:id="@+id/tv_shooting_type"
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        android:background="@drawable/card_background"
+                        android:padding="8dp"
+                        android:layout_marginTop="8dp"/>
+
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_shooting_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/tv_last_suggestions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            android:layout_marginTop="8dp"
-            android:textStyle="italic" />
-
-        <!-- 近七天统计 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="近七天统计"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"/>
-
-<!--        android:drawableStart="@drawable/ic_statistics" &lt;!&ndash; 添加图标 &ndash;&gt;-->
-<!--            android:drawablePadding="8dp"-->
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_last_suggestions_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:text="建议："
+                android:textColor="#333333"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_last_suggestions"
+                style="@style/AppText.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#333333"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
+
+            <!-- 近七天统计 -->
+            <TextView
+                style="@style/AppText.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="近七天统计"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"/>
+
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/tv_seven_days_count"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        android:layout_marginBottom="8dp" />
+
                     <TextView
                         android:id="@+id/tv_seven_days_hit"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        android:layout_marginBottom="8dp" />
+
                     <TextView
                         android:id="@+id/tv_seven_days_attempt"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tv_seven_days_suggestions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="暂无"
-            android:textColor="@color/gray"
-            android:layout_marginTop="8dp"
-            android:textStyle="italic" />
+            <TextView
+                android:id="@+id/tv_seven_days_suggestions_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="建议："
+                android:textColor="#333333"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
 
-        <!-- 开始训练按钮 -->
-        <Button
-            android:id="@+id/btnStartTraining"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="开始训练"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/primaryColor"
-            android:layout_marginTop="24dp"
-            android:padding="12dp"
-            android:stateListAnimator="@null"
-            app:cornerRadius="8dp"/>
-<!--            android:drawableStart="@drawable/ic_play" &lt;!&ndash; 添加图标 &ndash;&gt;-->
-<!--            android:drawablePadding="8dp"-->
+            <TextView
+                android:id="@+id/tv_seven_days_suggestions"
+                style="@style/AppText.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="暂无"
+                android:layout_marginTop="4dp"
+                android:textColor="#333333"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
 
-    </LinearLayout>
-</ScrollView>
+            <!-- 开始训练按钮 -->
+            <Button
+                android:id="@+id/btnStartTraining"
+                style="@style/AppButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开始训练"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Bar -->
+    <include layout="@layout/layout_bottom_bar" />
+</LinearLayout>
