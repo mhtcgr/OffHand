@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_main">
+
+    <!-- Top Bar -->
+    <include layout="@layout/layout_top_bar" />
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 页面标题 -->
+            <TextView
+                style="@style/AppText.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_title"
+                android:gravity="center"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- 库里投篮技巧 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- 标题和图片 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            style="@style/AppText.Subtitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="斯蒂芬·库里：完美投篮技巧"
+                            android:textColor="@color/primaryColor"/>
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/curry"
+                            android:contentDescription="库里头像"/>
+                    </LinearLayout>
+
+                    <!-- 内容 -->
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="库里被认为是NBA历史上最伟大的投篮手之一。他的投篮技巧包括以下几点："
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. 出手点高 - 库里的出手点高于头顶，这使他可以越过大多数防守者投篮。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2. 快速出手 - 从接球到出手，库里只需不到0.4秒。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3. 手指控制 - 库里使用食指和中指来控制球的旋转和方向。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4. 下蹲姿势 - 即使在远距离投篮时，库里也保持良好的下蹲姿势，确保力量。"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="库里每天练习500-1000次投篮，专注于从不同位置和角度投篮。"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 杜兰特投篮技巧 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- 标题和图片 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            style="@style/AppText.Subtitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="凯文·杜兰特：不可阻挡的中距离"
+                            android:textColor="@color/primaryColor"/>
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/durant"
+                            android:contentDescription="杜兰特头像"/>
+                    </LinearLayout>
+
+                    <!-- 内容 -->
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="杜兰特以其高度和精准的中距离投篮而闻名。以下是他投篮技巧的关键："
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. 高出手点 - 以杜兰特的身高(7英尺)，他的出手点几乎无法被封盖。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2. 后仰跳投 - 杜兰特经常使用后仰跳投，为自己创造更多空间。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3. 精确的脚步 - 他的脚步移动非常精确，一步就能创造出投篮空间。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4. 柔软手腕 - 杜兰特的手腕极其灵活，可以在各种姿势下保持投篮稳定。"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="杜兰特的训练包括大量的中距离投篮练习，尤其是面对强对抗时的稳定性训练。"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 詹姆斯上篮技巧 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- 标题和图片 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            style="@style/AppText.Subtitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="勒布朗·詹姆斯：强势突破与上篮"
+                            android:textColor="@color/primaryColor"/>
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/lebron"
+                            android:contentDescription="詹姆斯头像"/>
+                    </LinearLayout>
+
+                    <!-- 内容 -->
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="詹姆斯以其强壮的身体和爆发力著称，他的突破上篮几乎无人能挡："
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. 身体控制 - 詹姆斯能在空中调整姿势，避开防守者。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2. 强大核心 - 他的核心力量让他能在对抗中保持平衡。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3. 欧洲步 - 詹姆斯经常使用欧洲步避开防守者完成上篮。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4. 多样化终结 - 他可以用各种手法完成上篮，包括反手、拉杆等。"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="詹姆斯常常在训练中模拟对抗情况，练习在高强度防守下的终结能力。"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 投篮训练建议 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/AppText.Subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="投篮训练小贴士"
+                        android:textColor="@color/primaryColor"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="无论你想模仿哪位NBA球星的投篮技巧，以下是一些通用的训练建议："
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 每天保持练习 - 持续性是提高投篮命中率的关键。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 专注于姿势 - 确保你的脚步位置、手肘角度和手腕动作正确。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 从近距离开始 - 先掌握近距离投篮，再逐渐增加距离。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 录制自己 - 记录自己的投篮动作，对比专业球员找出不同。"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 保持信心 - 投篮很大程度上是心理活动，保持积极的心态。"
+                        android:layout_marginBottom="4dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Bar -->
+    <include layout="@layout/layout_bottom_bar" />
+</LinearLayout> 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Camera preview -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.example.offhand.view.BasketBoxView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/closeButton"
+        style="@style/AppButton.Small"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:text="✖"
+        android:layout_gravity="top|end"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_margin="16dp"
+        android:elevation="4dp" />
+
+    <!-- Instructions -->
+    <TextView
+        android:id="@+id/instructionsText"
+        style="@style/AppText.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="将篮筐放入框内，准备好后点击开始"
+        android:textColor="@color/white"
+        android:background="#80000000"
+        android:padding="8dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_margin="16dp" />
+
+    <!-- Start Button -->
+    <Button
+        android:id="@+id/startButton"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="16dp" />
+
+</FrameLayout>

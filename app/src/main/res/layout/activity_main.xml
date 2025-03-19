@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Camera preview -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.example.offhand.view.BasketBoxView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Timer TextView -->
+    <TextView
+        android:id="@+id/timerTextView"
+        style="@style/AppText.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:layout_gravity="top|center_horizontal"
+        android:padding="16dp"
+        android:textColor="#FFFFFF"
+        android:background="#80000000" />
+
+    <!-- Start/Pause Button -->
+    <Button
+        android:id="@+id/startPauseButton"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp" />
+
+    <!-- Score and Shot Count -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="#80000000"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="32dp">
+
+            <TextView
+                android:id="@+id/scoreTextView"
+                style="@style/AppText.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:gravity="center" />
+
+            <TextView
+                style="@style/AppText.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="进球"
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/shotsTextView"
+                style="@style/AppText.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:gravity="center" />
+
+            <TextView
+                style="@style/AppText.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="投篮"
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/closeButton"
+        style="@style/AppButton.Small"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:text="✖"
+        android:layout_gravity="top|end"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_margin="16dp"
+        android:elevation="4dp" />
+
+    <!-- Existing layout elements -->
+
+</FrameLayout>

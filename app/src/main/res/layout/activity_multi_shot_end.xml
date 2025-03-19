@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/backgroundColor"
+    android:padding="16dp">
+
+    <TextView
+        style="@style/AppText.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="训练结束"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"/>
+
+    <androidx.cardview.widget.CardView
+        style="@style/AppCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/timerTextView"
+                style="@style/AppText.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="训练时长: 00:00"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/scoreTextView"
+                style="@style/AppText.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="进球数: 3"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/shotsTextView"
+                style="@style/AppText.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="投篮数: 5"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/button_next"
+        style="@style/AppButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="看看AI反馈"
+        android:shadowColor="@color/white"
+        android:textColor="@color/white"/>
+</LinearLayout>

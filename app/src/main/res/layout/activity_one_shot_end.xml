@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- 固定顶栏 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryColor"
+        android:elevation="4dp"
+        app:titleTextColor="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_shot_analysis"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="#F5F7FA">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 动态回放卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="20dp"
+                            android:background="@color/primaryColor"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_shot_replay"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/gifImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/content_description_gif"
+                        android:background="#F0F0F0"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 瞄准阶段表格卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="20dp"
+                            android:background="#4CAF50"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_aim_analysis"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/table_border_modern"
+                        android:stretchColumns="*"
+                        android:divider="@drawable/table_divider"
+                        android:showDividers="middle">
+
+                        <!-- 表头 -->
+                        <TableRow
+                            android:background="#EBF5F0"
+                            android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.2"
+                                android:text="@string/table_header_metric"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_header_standard"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_header_your"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+
+                        <!-- 数据行 -->
+                        <TableRow android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_elbow_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_elbow_aim"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_aim_elbow"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp"
+                            android:background="#F8F8F8">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_body_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_body_aim"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_aim_body"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_knee_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_knee_aim"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_aim_knee"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp"
+                            android:background="#F8F8F8">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_arm_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_arm_aim"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_aim_arm"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 出手阶段表格卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="20dp"
+                            android:background="#FF9800"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_release_analysis"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"/>
+                    </LinearLayout>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/table_border_modern"
+                        android:stretchColumns="*"
+                        android:divider="@drawable/table_divider"
+                        android:showDividers="middle">
+
+                        <!-- 表头 -->
+                        <TableRow
+                            android:background="#FFF5E6"
+                            android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.2"
+                                android:text="@string/table_header_metric"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_header_standard"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_header_your"
+                                android:textStyle="bold"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+
+                        <!-- 数据行 -->
+                        <TableRow android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_elbow_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_elbow_release"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_release_elbow"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp"
+                            android:background="#F8F8F8">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_arm_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_arm_release"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_release_arm"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_knee_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_knee_release"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_release_knee"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                        <TableRow android:padding="12dp"
+                            android:background="#F8F8F8">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.2"
+                                android:layout_height="wrap_content"
+                                android:text="@string/table_body_angle"
+                                android:textColor="#555555"
+                                android:textSize="14sp"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/standard_body_release"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                            <TextView
+                                android:id="@+id/tv_release_body"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="14sp"
+                                android:gravity="center"/>
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- AI分析建议卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_analysis"
+                            app:tint="#2196F3"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_ai_analysis"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2196F3"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_analysis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_background_blue"
+                        android:padding="16dp"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 需要改进的方面卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_improvement"
+                            app:tint="#F44336"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_improvement"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#F44336"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_weakness"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_background_red"
+                        android:padding="16dp"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- AI询问卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_question"
+                            app:tint="#673AB7"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_ai_consult"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#673AB7"/>
+                    </LinearLayout>
+
+                    <!-- 输入框和询问按钮 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- 输入框 -->
+                        <EditText
+                            android:id="@+id/inputBox"
+                            android:layout_width="0dp"
+                            android:layout_height="59dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/edit_text_modern"
+                            android:hint="@string/hint_ask_ai"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:textColorHint="#9E9E9E"
+                            android:textSize="14sp" />
+
+                        <!-- 询问按钮 -->
+                        <Button
+                            android:id="@+id/askButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:backgroundTint="#673AB7"
+                            android:text="@string/btn_ask"
+                            android:textColor="@color/white"
+                            app:cornerRadius="8dp" />
+                    </LinearLayout>
+
+                    <!-- AI 回答区域 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_background_purple"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_ai_answer"
+                            android:textColor="#673AB7"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:id="@+id/answerArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/default_ai_answer"
+                            android:textSize="14sp"
+                            android:textColor="#333333"
+                            android:lineSpacingExtra="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 按钮区域卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <Button
+                        android:id="@+id/save_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:backgroundTint="@color/primaryColor"
+                        android:text="@string/btn_save_report"
+                        android:textStyle="bold"
+                        app:cornerRadius="8dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/next_shot_button"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:text="@string/btn_continue_shooting"
+                            android:textStyle="bold"
+                            android:backgroundTint="#4CAF50"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_next"
+                            app:iconGravity="textStart"/>
+
+                        <Button
+                            android:id="@+id/return_button"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_weight="1"
+                            android:text="@string/btn_return_home"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_home"
+                            app:iconGravity="textStart"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 进度条 -->
+            <ProgressBar
+                android:id="@+id/loadingProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/> 
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+

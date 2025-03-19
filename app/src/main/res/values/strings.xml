@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">offHand</string>
+    <string name="a">"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjEiLCJqdGkiOiI4ZDliMTcxOC1lMDA0LTQ3OWItYWIwYy02YjZkN2NlYTBkOWYiLCJleHAiOjE3NDUyNTkzNTIsImlhdCI6MTc0MTY1OTM1Miwic3ViIjoiUGVyaXBoZXJhbHMiLCJpc3MiOiJUaWFtIn0.1SBagf2D_HQ2k3J63VAsrYinRMp7yzukMsg4xXjk13I"</string>
+
+    <!-- 通用 -->
+    <string name="close">✖</string>
+    <string name="next">下一步</string>
+    <string name="ready">准备好了</string>
+    <string name="select">选择</string>
+    <string name="start">开始</string>
+    <string name="connect">连接</string>
+    <string name="upload">上传</string>
+    <string name="tips">提示</string>
+    <string name="suggestion">建议</string>
+    <string name="statistics">统计</string>
+    <string name="optimization">优化</string>
+
+    <!-- 底部导航栏 -->
+    <string name="nav_home">首页</string>
+    <string name="nav_training">训练</string>
+    <string name="nav_tutorial">教学</string>
+
+    <!-- 顶部栏 -->
+    <string name="top_bar_title">AI 辅助手</string>
+
+    <!-- 开始页面 -->
+    <string name="greeting">嗨，篮球爱好者</string>
+    <string name="today_goal">今日目标：完成50次中距离投篮训练</string>
+    <string name="motivation">坚持练习是成为优秀投手的唯一捷径，今天也要全力以赴！</string>
+    <string name="connect_device">连接设备</string>
+    <string name="add_watch">添加您的蓝牙手表</string>
+    <string name="add_earphone">添加您的蓝牙耳机</string>
+    <string name="start_training">开始训练</string>
+    <string name="upload_video">上传投篮视频</string>
+    <string name="start_directly">直接开始训练</string>
+
+    <!-- 训练页面 -->
+    <string name="latest_data">最新训练数据</string>
+    <string name="training_suggestion">训练建议</string>
+    <string name="weekly_stats">近七天统计</string>
+    <string name="optimization_suggestion">优化建议</string>
+    <string name="start_new_training">开始新的训练，记录更多数据</string>
+
+    <!-- 训练方式选择 -->
+    <string name="select_training_mode">选择训练方式</string>
+    <string name="single_shot">一次投篮</string>
+    <string name="multiple_shots">多次投篮</string>
+    <string name="select_training_topic">选择训练主题</string>
+    <string name="three_point">三分</string>
+    <string name="mid_range">中投</string>
+
+    <!-- 使用提示 -->
+    <string name="usage_tips">使用提示</string>
+    <string name="tip_net">请在有篮网的篮筐投篮</string>
+    <string name="tip_ball">标准颜色的球</string>
+    <string name="tip_light">明亮的环境</string>
+    <string name="tip_tripod">如果放在三脚架上效果更好</string>
+
+    <!-- 投篮分析页面 -->
+    <string name="title_shot_analysis">投篮分析报告</string>
+    <string name="title_shot_replay">投篮动态回放</string>
+    <string name="title_aim_analysis">瞄准姿势与标准对比</string>
+    <string name="title_release_analysis">出手姿势与标准对比</string>
+    <string name="title_ai_analysis">AI分析建议</string>
+    <string name="title_improvement">需要改进的方面</string>
+    <string name="title_ai_consult">向AI进一步咨询</string>
+    <string name="default_card_title">卡片标题</string>
+    
+    <!-- 表格标题 -->
+    <string name="table_header_metric">测量指标</string>
+    <string name="table_header_standard">标准角度</string>
+    <string name="table_header_your">你的角度</string>
+    <string name="table_elbow_angle">肘关节角度</string>
+    <string name="table_body_angle">身体角度</string>
+    <string name="table_knee_angle">膝盖角度</string>
+    <string name="table_arm_angle">大臂角度</string>
+    
+    <!-- 标准角度数值 -->
+    <string name="standard_elbow_aim">85~95°</string>
+    <string name="standard_body_aim">85~95°</string>
+    <string name="standard_knee_aim">120~140°</string>
+    <string name="standard_arm_aim">45~60°</string>
+    <string name="standard_elbow_release">180°</string>
+    <string name="standard_arm_release">90~120°</string>
+    <string name="standard_knee_release">180°</string>
+    <string name="standard_body_release">10~20°</string>
+    
+    <!-- 按钮文字 -->
+    <string name="btn_save_report">保存本次训练报告</string>
+    <string name="btn_continue_shooting">继续投篮</string>
+    <string name="btn_return_home">返回主页</string>
+    <string name="btn_ask">询问</string>
+    
+    <!-- 提示文本 -->
+    <string name="hint_ask_ai">有什么疑问？在这里询问AI…</string>
+    <string name="title_ai_answer">AI回答</string>
+    <string name="default_ai_answer">您好，我是您的投篮AI助手，请问有什么可以帮助您的吗？</string>
+    <string name="content_description_card_icon">卡片图标</string>
+    <string name="content_description_gif">你的姿势回放</string>
+
+    <!-- 教学页面 -->
+    <string name="tutorial_title">NBA球星投篮教学</string>
+    <string name="curry_title">斯蒂芬·库里：完美投篮技巧</string>
+    <string name="curry_intro">库里被认为是NBA历史上最伟大的投篮手之一。他的投篮技巧包括以下几点：</string>
+    <string name="curry_tip1">1. 出手点高 - 库里的出手点高于头顶，这使他可以越过大多数防守者投篮。</string>
+    <string name="curry_tip2">2. 快速出手 - 从接球到出手，库里只需不到0.4秒。</string>
+    <string name="curry_tip3">3. 手指控制 - 库里使用食指和中指来控制球的旋转和方向。</string>
+    <string name="curry_tip4">4. 下蹲姿势 - 即使在远距离投篮时，库里也保持良好的下蹲姿势，确保力量。</string>
+    <string name="curry_tip5">库里每天练习500-1000次投篮，专注于从不同位置和角度投篮。</string>
+
+    <string name="durant_title">凯文·杜兰特：不可阻挡的中距离</string>
+    <string name="durant_intro">杜兰特以其高度和精准的中距离投篮而闻名。以下是他投篮技巧的关键：</string>
+    <string name="durant_tip1">1. 高出手点 - 以杜兰特的身高(7英尺)，他的出手点几乎无法被封盖。</string>
+    <string name="durant_tip2">2. 后仰跳投 - 杜兰特经常使用后仰跳投，为自己创造更多空间。</string>
+    <string name="durant_tip3">3. 精确的脚步 - 他的脚步移动非常精确，一步就能创造出投篮空间。</string>
+    <string name="durant_tip4">4. 柔软手腕 - 杜兰特的手腕极其灵活，可以在各种姿势下保持投篮稳定。</string>
+    <string name="durant_tip5">杜兰特的训练包括大量的中距离投篮练习，尤其是面对强对抗时的稳定性训练。</string>
+
+    <string name="james_title">勒布朗·詹姆斯：强势突破与上篮</string>
+    <string name="james_intro">詹姆斯以其强壮的身体和爆发力著称，他的突破上篮几乎无人能挡：</string>
+    <string name="james_tip1">1. 身体控制 - 詹姆斯能在空中调整姿势，避开防守者。</string>
+    <string name="james_tip2">2. 强大核心 - 他的核心力量让他能在对抗中保持平衡。</string>
+    <string name="james_tip3">3. 欧洲步 - 詹姆斯经常使用欧洲步避开防守者完成上篮。</string>
+    <string name="james_tip4">4. 多样化终结 - 他可以用各种手法完成上篮，包括反手、拉杆等。</string>
+    <string name="james_tip5">詹姆斯常常在训练中模拟对抗情况，练习在高强度防守下的终结能力。</string>
+
+    <string name="general_tips_title">投篮训练小贴士</string>
+    <string name="general_tips_intro">无论你想模仿哪位NBA球星的投篮技巧，以下是一些通用的训练建议：</string>
+    <string name="general_tip1">• 每天保持练习 - 持续性是提高投篮命中率的关键。</string>
+    <string name="general_tip2">• 专注于姿势 - 确保你的脚步位置、手肘角度和手腕动作正确。</string>
+    <string name="general_tip3">• 从近距离开始 - 先掌握近距离投篮，再逐渐增加距离。</string>
+    <string name="general_tip4">• 录制自己 - 记录自己的投篮动作，对比专业球员找出不同。</string>
+    <string name="general_tip5">• 保持信心 - 投篮很大程度上是心理活动，保持积极的心态。</string>
+
+    <string name="LLM_response">根据网上的篮球知识以及您的身体姿态数据，以下是调整手臂姿势的建议：
+        1.瞄准蓄力阶段：
+        手肘正对篮筐，确保投篮手大臂与躯干夹角约80°-90°，小臂与大臂呈90°(“L型”)。这样可以确保发力方向直线指向篮筐，减少左右偏差。四点一线(手腕-手肘-膝盖-脚尖)应接近直线，增强力量传导效率，减少能量损耗。
+        2.出手阶段
+        手臂应完全伸展，手肘接近180°，大臂与躯干夹角扩大至120°-130°，确保篮球沿直线推出。
+        手腕快速下压(拨腕)，食指与中指最后离球，赋予篮球后旋(约3-5转/秒)，提升入筐容错率。
+        这些调整有助于优化投篮的准确性和稳定性。坚持练习，您会看到显著的进步!</string>
+</resources>

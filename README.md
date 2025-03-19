@@ -1,0 +1,1 @@
+OffHand AI is an innovative Android application designed to help basketball players improve their shooting technique. By leveraging advanced computer vision and large language models (LLMs), the app analyzes shooting posture in real-time and provides personalized feedback to enhance accuracy and form.
