@@ -13,12 +13,12 @@ object ImageProcess {
         val originalHeight = bitmap.height
 
         // 计算裁剪区域
-        val scale = max(512.toFloat() / originalWidth, 288.toFloat() / originalHeight)
-        val scaledWidth = (originalWidth * scale).toInt()
-        val scaledHeight = (originalHeight * scale).toInt()
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 512, 288, true)
+//        val scale = max(512.toFloat() / originalWidth, 288.toFloat() / originalHeight)
+//        val scaledWidth = (originalWidth * scale).toInt()
+//        val scaledHeight = (originalHeight * scale).toInt()
+//        Bitmap = Bitmap.createScaledBitmap(bitmap, 512, 288, true)
         val byteArrayOutputStream = ByteArrayOutputStream()
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
     }
 

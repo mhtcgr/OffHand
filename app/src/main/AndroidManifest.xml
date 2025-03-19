@@ -24,6 +24,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/Theme.OffHand.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".TutorialActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
@@ -47,10 +57,6 @@
             android:name=".StartActivity"
             android:screenOrientation="portrait"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".TrainingSessionActivity"

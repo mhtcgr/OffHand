@@ -77,8 +77,6 @@ class OneShotActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_one_shot)
 
-
-
         previewView = findViewById(R.id.previewView)
         closeButton = findViewById(R.id.closeButton)
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -151,7 +149,7 @@ class OneShotActivity : AppCompatActivity() {
                     this as LifecycleOwner, cameraSelector, preview, imageAnalysis//videoCapture
                 )
             } catch (exc: Exception) {
-                Log.e("CameraX", "Use case binding failed", exc)
+                //Log.e("CameraX", "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -194,7 +192,7 @@ class OneShotActivity : AppCompatActivity() {
                             }
                             "receive" -> {
                                 // 未检测到投篮，仅显示上传成功消息
-                                Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                                //Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
                             }
                             "release" -> {
                                 // 收到 release 消息，上传当前帧的图像
@@ -205,18 +203,18 @@ class OneShotActivity : AppCompatActivity() {
                             }
                             else -> {
                                 // 未知响应，显示警告
-                                Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                                //Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
                             }
                         }
                     } catch (e: JSONException) {
                         e.printStackTrace()
-                        Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
                     }
                 }
             },
             onFailure = { errorMessage ->
                 runOnUiThread {
-                    Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -246,7 +244,7 @@ class OneShotActivity : AppCompatActivity() {
             onSuccess = { _, responseBody ->
                 // 处理成功响应
                 runOnUiThread {
-                    Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
                 }
                 val apiRespon = ApiResponse(
                     code = "200",
@@ -283,7 +281,7 @@ class OneShotActivity : AppCompatActivity() {
             onFailure = { errorCode, errorMessage ->
                 // 处理失败
                 runOnUiThread {
-                    Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_LONG).show()
                 }
             }
         )

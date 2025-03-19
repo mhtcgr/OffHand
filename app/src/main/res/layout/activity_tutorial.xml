@@ -27,7 +27,7 @@
                 style="@style/AppText.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="NBA球星投篮教学"
+                android:text="@string/tutorial_title"
                 android:gravity="center"
                 android:layout_marginBottom="24dp"/>
 

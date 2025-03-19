@@ -36,25 +36,22 @@ class MultiShotEndActivity : AppCompatActivity() {
                 userId = "user_001",
                 recordId = "record_001",
                 onSuccess = { apiResponse, responseBody ->
-                    // 处理成功响应
-                    runOnUiThread {
-                        Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_LONG).show()
-                    }
                     //这里还需要加一个跳转到ywh写的新页面的逻辑
                     val intent = Intent(this, OneShotEndActivity::class.java).apply {
                         putExtra("analysis_data", apiResponse) // 直接传递对象
                     }
                     startActivity(intent)
                     finish()
-                    //handleApiResponse(apiResponse) // 处理解析后的数据
                 },
                 onFailure = { errorCode, errorMessage ->
                     // 处理失败
                     runOnUiThread {
-                        Toast.makeText(this, "请求失败: $errorCode, $errorMessage", Toast.LENGTH_LONG).show()
                     }
                 }
             )
+        val intent = Intent(this, MultiShotAdviseActivity::class.java)
+        startActivity(intent)
+        finish()
         }
     }
 }

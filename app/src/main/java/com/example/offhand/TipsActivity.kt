@@ -22,7 +22,6 @@ class TipsActivity : AppCompatActivity() {
         val closeButton: Button = findViewById(R.id.closeButton)
 
         nextButton.setOnClickListener {
-            val intent = intent
             if (selectedMethod == "multiple") {
                 // 跳转到多次投篮页面
                 val intent = Intent(this, MainActivity::class.java)
@@ -50,10 +49,10 @@ class TipsActivity : AppCompatActivity() {
                         val message = jsonResponse.getString("message")
                         when(message){
                             "Operation succeeded"-> {
-                                Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(this, "请求成功: $responseBody", Toast.LENGTH_SHORT).show()
                             }
                             else -> {
-                                Toast.makeText(this, "请求失败: $message", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(this, "请求失败: $message", Toast.LENGTH_SHORT).show()
                             }
                         }
 
@@ -61,7 +60,7 @@ class TipsActivity : AppCompatActivity() {
                 },
                 onFailure = { errorMessage ->
                     runOnUiThread {
-                        Toast.makeText(this, "请求失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, "请求失败: $errorMessage", Toast.LENGTH_SHORT).show()
                     }
                 }
             )

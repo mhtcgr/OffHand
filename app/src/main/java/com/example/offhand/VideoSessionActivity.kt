@@ -45,8 +45,10 @@ class VideoSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video_session)
         setupButtonSelection()
         setupReadyButton()
+        setupNavigationButton()
+    }
 
-
+    private fun setupNavigationButton() {
         // 找到底部导航栏中的按钮
         val btnHome = findViewById<LinearLayout>(R.id.btn_home)
         val btnTraining = findViewById<LinearLayout>(R.id.btn_training)
@@ -77,12 +79,9 @@ class VideoSessionActivity : AppCompatActivity() {
             startActivity(intent)
             finish() // 结束当前Activity
         }
-
-
     }
 
     private fun setupButtonSelection() {
-        // 训练方式选择，"mid shoot"字段有问题！
         findViewById<View>(R.id.btn_single).setOnClickListener { v: View ->
             selectMethodButton(v as Button, "single")
             deselectMethodButton(findViewById(R.id.btn_multiple))
@@ -128,6 +127,10 @@ class VideoSessionActivity : AppCompatActivity() {
             if (validateSelection()) {
                 postTrainingData()
                 jumpToVideoSelection()
+//                val intent = Intent(this, OneShotEndActivity::class.java)
+//                startActivity(intent)
+//                finish()
+
             } else {
                 Toast.makeText(this, "请先选择训练方式和主题", Toast.LENGTH_SHORT).show()
             }
@@ -154,6 +157,9 @@ class VideoSessionActivity : AppCompatActivity() {
                 VideoFrameExtractorTask().execute(videoUri)
                 Toast.makeText(this, "视频已选择: $videoUri", Toast.LENGTH_SHORT).show()
             }
+            val intent = Intent(this, OneShotEndActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -226,8 +232,8 @@ class VideoSessionActivity : AppCompatActivity() {
                 val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                 val durationMs = durationStr?.toLong() ?: 0
 
-                // 每秒提取 6 帧
-                for (timeMs in 0 until durationMs step 1000 / 6) {
+                // 每秒提取 12 帧
+                for (timeMs in 0 until durationMs step 1000 / 12) {
                     // 获取当前时间点的帧
                     val bitmap = retriever.getFrameAtTime(timeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST)
                     if (bitmap != null) {
@@ -285,20 +291,20 @@ class VideoSessionActivity : AppCompatActivity() {
                                 }
                             } catch (e: JSONException) {
                                 e.printStackTrace()
-                                Toast.makeText(this@VideoSessionActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                                //Toast.makeText(this@VideoSessionActivity, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
                             }
                         }
                     },
                     onFailure = { errorMessage ->
                         // 处理上传失败逻辑
                         runOnUiThread {
-                            Toast.makeText(this@VideoSessionActivity, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(this@VideoSessionActivity, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
                         }
                     }
                 )
             } else {
                 // 无法提取视频帧
-                Toast.makeText(this@VideoSessionActivity, "无法提取视频帧", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@VideoSessionActivity, "无法提取视频帧", Toast.LENGTH_SHORT).show()
             }
         }
 

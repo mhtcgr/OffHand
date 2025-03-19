@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/gradient_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_gradient_background" />
+
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_app_logo"
+        app:layout_constraintBottom_toTopOf="@+id/app_name_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/app_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="GuideHand"
+        android:textColor="@color/primaryColor"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tagline_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_image" />
+
+    <TextView
+        android:id="@+id/tagline_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-light"
+        android:text="您的专业AI篮球训练助手"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_name_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

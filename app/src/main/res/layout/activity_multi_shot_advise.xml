@@ -146,12 +146,12 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_save"
-                    style="@style/AppButton.Secondary"
+                    android:id="@+id/btn_quit"
+                    style="@style/AppButton"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="保存报告"
+                    android:text="退出"
                     android:layout_marginEnd="8dp"/>
 
                 <Button

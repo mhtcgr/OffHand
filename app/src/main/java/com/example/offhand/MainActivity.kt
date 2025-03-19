@@ -4,9 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -33,30 +31,17 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.example.offhand.GlobalVariables.getBaseUrl
 import com.example.offhand.model.ImageProcess.bitmapToByteArray
 import com.example.offhand.model.ImageProcess.imageProxyToBitmap
 import com.example.offhand.model.ImageProcess.resizeImage
 import com.example.offhand.model.NetworkUtils
 import com.google.common.util.concurrent.ListenableFuture
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.max
 
 
 //多次投篮的主要界面
@@ -162,7 +147,7 @@ class MainActivity : AppCompatActivity() {
                         if (currentTime - lastCaptureTime >= FRAME_INTERVAL) {
                             lastCaptureTime = currentTime
                             processImage(image)
-                            Log.d("CameraX", "Processing frame at: $currentTime")
+                            //Log.d("CameraX", "Processing frame at: $currentTime")
                         } else {
                             image.close() // 立即释放不符合时间条件的帧
                         }
@@ -179,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                     this as LifecycleOwner, cameraSelector, preview, imageAnalysis//videoCapture
                 )
             } catch (exc: Exception) {
-                Log.e("CameraX", "Use case binding failed", exc)
+                //Log.e("CameraX", "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -228,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             "receive" -> {
                                 // 未检测到投篮，仅显示上传成功消息
-                                Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
+                                //Toast.makeText(this, "上传成功: $responseBody", Toast.LENGTH_LONG).show()
                             }
                             "release" -> {
                                 // 收到 release 消息，上传当前帧的图像
@@ -239,18 +224,18 @@ class MainActivity : AppCompatActivity() {
                             }
                             else -> {
                                 // 未知响应，显示警告
-                                Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
+                                //Toast.makeText(this, "未知响应: $responseBody", Toast.LENGTH_LONG).show()
                             }
                         }
                     } catch (e: JSONException) {
                         e.printStackTrace()
-                        Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this, "解析响应失败: $responseBody", Toast.LENGTH_LONG).show()
                     }
                 }
             },
             onFailure = { errorMessage ->
                 runOnUiThread {
-                    Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "上传失败: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -324,11 +309,6 @@ class MainActivity : AppCompatActivity() {
                         startPauseButton.text = "停止"
                     }
                     is VideoRecordEvent.Finalize -> {
-//                        if (!recordEvent.hasError()) {
-//                            Toast.makeText(this, "Video saved: ${videoFile.absolutePath}", Toast.LENGTH_SHORT).show()
-//                        } else {
-//                            Toast.makeText(this, "Video capture failed: ${recordEvent.error}", Toast.LENGTH_SHORT).show()
-//                        }
                         isRecording = false
                         startPauseButton.text = "开始"
                     }

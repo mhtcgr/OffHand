@@ -4,6 +4,7 @@
     <color name="primaryColor">#FFA500</color>
     <color name="primaryColorDark">#E69500</color>
     <color name="primaryColorLight">#FFB733</color>
+    <color name="lightPrimaryColor">#FFF5E6</color>
     
     <!-- Neutral colors -->
     <color name="white">#FFFFFF</color>

@@ -31,11 +31,21 @@
         style="@style/AppText.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="将篮筐放入框内"
+        android:text="将篮筐放入框内，准备好后点击开始"
         android:textColor="@color/white"
         android:background="#80000000"
         android:padding="8dp"
         android:layout_gravity="top|center_horizontal"
+        android:layout_margin="16dp" />
+
+    <!-- Start Button -->
+    <Button
+        android:id="@+id/startButton"
+        style="@style/AppButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="16dp" />
 
 </FrameLayout>

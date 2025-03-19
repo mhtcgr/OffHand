@@ -34,6 +34,14 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
     
+    <!-- Splash screen theme with no action bar and fullscreen -->
+    <style name="Theme.OffHand.NoActionBar" parent="Theme.OffHand">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
     <!-- Shape appearance -->
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>

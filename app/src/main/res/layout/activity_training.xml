@@ -22,13 +22,27 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- 最新训练数据 -->
-            <TextView
-                style="@style/AppText.Subtitle"
+            <!-- 最新训练数据 Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="最新训练数据"
-                android:layout_marginBottom="16dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="24dp"
+                    android:background="@color/primaryColor"
+                    android:layout_marginEnd="8dp"/>
+                    
+                <TextView
+                    style="@style/AppText.Subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="最新训练数据"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
             <!-- 数据展示区域 -->
             <androidx.cardview.widget.CardView
@@ -36,7 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardElevation="4dp">
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -44,32 +59,83 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tv_last_date"
-                        style="@style/AppText.Body"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_calendar"
+                            android:layout_marginEnd="8dp"
+                            app:tint="@color/primaryColor"/>
+                            
+                        <TextView
+                            android:id="@+id/tv_last_date"
+                            style="@style/AppText.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="16dp">
 
-                        <TextView
-                            android:id="@+id/tv_last_hit"
-                            style="@style/AppText.Body"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/tv_last_attempt"
-                            style="@style/AppText.Body"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/stat_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp">
+                            
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_target"
+                                app:tint="@color/primaryColor"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="4dp"/>
+                                
+                            <TextView
+                                android:id="@+id/tv_last_hit"
+                                style="@style/AppText.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/stat_background"
+                            android:padding="12dp"
+                            android:layout_marginStart="8dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="4dp"
+                                android:src="@drawable/ic_basketball"
+                                app:tint="@color/primaryColor" />
+
+                            <TextView
+                                android:id="@+id/tv_last_attempt"
+                                style="@style/AppText.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <TextView
@@ -78,47 +144,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/card_background"
-                        android:padding="8dp"
-                        android:layout_marginTop="8dp"/>
+                        android:padding="12dp"
+                        android:drawableStart="@drawable/ic_basketball_type"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/tv_last_suggestions_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="建议："
-                android:textColor="#333333"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
-
-            <TextView
-                android:id="@+id/tv_last_suggestions"
-                style="@style/AppText.Body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="#333333"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"/>
-
-            <!-- 近七天统计 -->
-            <TextView
-                style="@style/AppText.Subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="近七天统计"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"/>
-
+            <!-- 建议卡片 -->
             <androidx.cardview.widget.CardView
                 style="@style/AppCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginBottom="24dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/lightPrimaryColor">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,59 +168,248 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_suggestion"
+                            app:tint="@color/primaryColor"
+                            android:layout_marginEnd="8dp"/>
+                            
+                        <TextView
+                            android:id="@+id/tv_last_suggestions_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="训练建议"
+                            android:textColor="@color/primaryColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
                     <TextView
-                        android:id="@+id/tv_seven_days_count"
+                        android:id="@+id/tv_last_suggestions"
                         style="@style/AppText.Body"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/tv_seven_days_hit"
-                        style="@style/AppText.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/tv_seven_days_attempt"
-                        style="@style/AppText.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textColor="#333333"
+                        android:padding="8dp"
+                        android:background="@drawable/suggestion_background"
+                        android:lineSpacingExtra="4dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/tv_seven_days_suggestions_label"
+            <!-- 近七天统计 Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="建议："
-                android:textColor="#333333"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="24dp"
+                    android:background="@color/primaryColor"
+                    android:layout_marginEnd="8dp"/>
+                    
+                <TextView
+                    style="@style/AppText.Subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="近七天统计"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_seven_days_suggestions"
-                style="@style/AppText.Body"
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="暂无"
-                android:layout_marginTop="4dp"
-                android:textColor="#333333"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"/>
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/stat_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp">
+                            
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_calendar_week"
+                                android:tint="@color/primaryColor"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="4dp"/>
+                                
+                            <TextView
+                                android:id="@+id/tv_seven_days_count"
+                                style="@style/AppText.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/stat_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp">
+                            
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_target"
+                                app:tint="@color/primaryColor"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="4dp"/>
+                                
+                            <TextView
+                                android:id="@+id/tv_seven_days_hit"
+                                style="@style/AppText.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/stat_background"
+                            android:padding="12dp"
+                            android:layout_marginStart="8dp">
+                            
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_basketball"
+                                app:tint="@color/primaryColor"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="4dp"/>
+                                
+                            <TextView
+                                android:id="@+id/tv_seven_days_attempt"
+                                style="@style/AppText.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 七天建议卡片 -->
+            <androidx.cardview.widget.CardView
+                style="@style/AppCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/lightPrimaryColor">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_suggestion"
+                            app:tint="@color/primaryColor"
+                            android:layout_marginEnd="8dp"/>
+                            
+                        <TextView
+                            android:id="@+id/tv_seven_days_suggestions_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="优化建议"
+                            android:textColor="@color/primaryColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_seven_days_suggestions"
+                        style="@style/AppText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#333333"
+                        android:padding="8dp"
+                        android:background="@drawable/suggestion_background"
+                        android:lineSpacingExtra="4dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- 开始训练按钮 -->
-            <Button
-                android:id="@+id/btnStartTraining"
-                style="@style/AppButton"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="开始训练"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                android:textStyle="bold"/>
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp">
+                
+                <Button
+                    android:id="@+id/btnStartTraining"
+                    style="@style/AppButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="开始训练"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    app:cornerRadius="12dp"
+                    android:elevation="4dp"/>
+                    
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="开始新的训练，记录更多数据"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

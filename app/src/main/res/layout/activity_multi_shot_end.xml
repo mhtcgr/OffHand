@@ -41,7 +41,7 @@
                 style="@style/AppText.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="进球数: 0"
+                android:text="进球数: 3"
                 android:textSize="20sp"
                 android:layout_marginBottom="16dp" />
 
@@ -50,7 +50,7 @@
                 style="@style/AppText.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="投篮数: 0"
+                android:text="投篮数: 5"
                 android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -60,5 +60,7 @@
         style="@style/AppButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="看看AI反馈" />
+        android:text="看看AI反馈"
+        android:shadowColor="@color/white"
+        android:textColor="@color/white"/>
 </LinearLayout>

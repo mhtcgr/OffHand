@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,8 +29,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.offhand.model.ImageProcess;
 import com.example.offhand.model.MainApiResponse;
 import com.example.offhand.model.NetworkUtils;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -55,68 +59,127 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
-        // 找到底部导航栏中的按钮
-        LinearLayout btnHome = findViewById(R.id.btn_home);
-        LinearLayout btnTraining = findViewById(R.id.btn_training);
-
-
-        // 设置首页按钮点击事件
-        btnHome.setOnClickListener(new View.OnClickListener() {
+        
+        setupWelcomeSection();
+        setupBottomNavigation();
+        setupButtons();
+    }
+    
+    private void setupWelcomeSection() {
+        // 设置用户问候语
+        TextView tvGreeting = findViewById(R.id.tv_greeting);
+        TextView tvTodayGoal = findViewById(R.id.tv_today_goal);
+        TextView tvMotivation = findViewById(R.id.tv_motivation);
+        
+        // 这里可以从用户数据加载真实姓名，暂时使用固定值
+        String userName = "篮球爱好者";
+        tvGreeting.setText("嗨，" + userName);
+        
+        // 设置今日目标，可以根据用户历史数据生成个性化目标
+        tvTodayGoal.setText("今日目标：完成50次中距离投篮训练");
+        
+        // 设置激励语，将来可以做成随机从数组中选择
+        String[] motivations = new String[] {
+            "坚持练习是成为优秀投手的唯一捷径，今天也要全力以赴！",
+            "伟大的球员都是从一次次投篮练习中诞生的，相信你的训练！",
+            "进步来自于日复一日的坚持，今天将成为更好的自己！"
+        };
+        
+        // 随机选择一条激励语
+        int randomIndex = (int)(Math.random() * motivations.length);
+        tvMotivation.setText(motivations[randomIndex]);
+    }
+    
+    private void setupButtons() {
+        // 设置蓝牙手表按钮点击事件
+        MaterialButton btnBluetoothWatch = findViewById(R.id.btnBluetoothWatch);
+        btnBluetoothWatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 如果当前已经在StartActivity，则不需要重新启动
-//                if (!(StartActivity.this instanceof StartActivity)) {
-//                    Intent intent = new Intent(StartActivity.this, StartActivity.class);
-//                    startActivity(intent);
-//                    finish(); // 结束当前Activity
-//                }
+                // 添加蓝牙手表的逻辑
             }
         });
+        
+        // 设置蓝牙耳机按钮点击事件
+        MaterialButton btnBluetoothEarphone = findViewById(R.id.btnBluetoothEarphone);
+        btnBluetoothEarphone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 添加蓝牙耳机的逻辑
+                Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                startActivity(intent);
+            }
+        });
+        
+        // 设置上传视频按钮点击事件
+        MaterialButton btnUploadVideo = findViewById(R.id.btnUploadVideo);
+        btnUploadVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 上传视频的逻辑
+                Intent intent = new Intent(StartActivity.this, VideoSessionActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        // 设置开始训练按钮点击事件
+        MaterialButton btnStartTraining = findViewById(R.id.btnStartTraining);
+        btnStartTraining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchTrainingData();
+                Intent intent = new Intent(StartActivity.this, TrainingActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
 
+    private void setupBottomNavigation() {
+        LinearLayout btnHome = findViewById(R.id.btn_home);
+        LinearLayout btnTraining = findViewById(R.id.btn_training);
+        LinearLayout btnTutorial = findViewById(R.id.btn_tutorial);
+        
+        // 获取所有导航栏按钮的图标和文本
+        ImageView homeIcon = (ImageView) ((LinearLayout) btnHome).getChildAt(0);
+        TextView homeText = (TextView) ((LinearLayout) btnHome).getChildAt(1);
+        
+        ImageView trainingIcon = (ImageView) ((LinearLayout) btnTraining).getChildAt(0);
+        TextView trainingText = (TextView) ((LinearLayout) btnTraining).getChildAt(1);
+        
+        ImageView tutorialIcon = (ImageView) ((LinearLayout) btnTutorial).getChildAt(0);
+        TextView tutorialText = (TextView) ((LinearLayout) btnTutorial).getChildAt(1);
+        
+        // 设置首页按钮高亮
+        homeIcon.setColorFilter(getResources().getColor(R.color.primaryColor));
+        homeText.setTextColor(getResources().getColor(R.color.primaryColor));
+        
+        // 设置其他按钮为非高亮
+        trainingIcon.setColorFilter(getResources().getColor(R.color.gray));
+        trainingText.setTextColor(getResources().getColor(R.color.gray));
+        
+        tutorialIcon.setColorFilter(getResources().getColor(R.color.gray));
+        tutorialText.setTextColor(getResources().getColor(R.color.gray));
+
+        // 当前页面是首页，不需要为首页按钮设置点击事件
+        
         // 设置训练按钮点击事件
         btnTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 如果当前已经在TrainingActivity，则不需要重新启动
                 Intent intent = new Intent(StartActivity.this, TrainingActivity.class);
                 startActivity(intent);
-                finish(); // 结束当前Activity
+                finish();
             }
         });
-        LinearLayout btnTutorial = findViewById(R.id.btn_tutorial);
+        
+        // 设置教学按钮点击事件
         btnTutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 如果当前已经在TrainingActivity，则不需要重新启动
                 Intent intent = new Intent(StartActivity.this, TutorialActivity.class);
                 startActivity(intent);
-                finish(); // 结束当前Activity
+                finish();
             }
-        });
-
-        // 蓝牙手表按钮
-        findViewById(R.id.btnBluetoothWatch).setOnClickListener(v -> {
-            Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
-            startActivity(intent);
-        });
-
-        // 蓝牙耳机按钮
-        findViewById(R.id.btnBluetoothEarphone).setOnClickListener(v -> {
-            Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
-            startActivity(intent);
-        });
-
-        // 开始训练按钮
-        findViewById(R.id.btnStartTraining).setOnClickListener(v -> {
-            fetchTrainingData();
-        });
-
-        findViewById(R.id.btnUploadVideo).setOnClickListener(v -> {
-            //跳转到VideoSessionActivity
-            Intent intent = new Intent(StartActivity.this, VideoSessionActivity.class);
-            startActivity(intent);
-            //openVideoPicker();
         });
     }
 
@@ -188,7 +251,6 @@ public class StartActivity extends AppCompatActivity {
 
     // 上传视频
     private void uploadVideo(Uri videoUri) {
-        // TODO: 实现视频上传逻辑
         new VideoFrameExtractorTask().execute(videoUri);
         Toast.makeText(this, "视频已选择: " + videoUri, Toast.LENGTH_SHORT).show();
     }
@@ -215,7 +277,7 @@ public class StartActivity extends AppCompatActivity {
                     Bitmap bitmap = retriever.getFrameAtTime(timeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
                     if (bitmap != null) {
                         // 将 Bitmap 转换为字节数组
-                        byte[] imageData = bitmapToByteArray(bitmap);
+                        byte[] imageData = ImageProcess.INSTANCE.bitmapToByteArray(bitmap);
                         imageList.add(imageData);
                     }
                 }
@@ -276,13 +338,6 @@ public class StartActivity extends AppCompatActivity {
                 Toast.makeText(StartActivity.this, "无法提取视频帧", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    // 将 Bitmap 转换为字节数组
-    private byte[] bitmapToByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-        return stream.toByteArray();
     }
 }
 
